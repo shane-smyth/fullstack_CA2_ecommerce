@@ -1,0 +1,12 @@
+$body-colour: white;
+
+body {
+    background-color: $body-colour;
+}
+
+
+$product-img-width-list: 50px;
+
+.imgProductList {
+    width: $product-img-width-list;
+}
