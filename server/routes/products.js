@@ -11,7 +11,7 @@ let products =
             category: "Guitars",
             subcategory: "Electric Guitars",
             brand: "Fender",
-            stock: 10,
+            stock: 4,
             specifications: {
                 body: "Alder",
                 neck: "Maple",
@@ -28,7 +28,7 @@ let products =
             category: "Guitars",
             subcategory: "Electric Guitars",
             brand: "Gibson",
-            stock: 5,
+            stock: 0,
             specifications: {
                 body: "Mahogany",
                 neck: "Mahogany",
