@@ -30,26 +30,26 @@ export default class Home extends Component {
         return (
             <div>
                 <div className="hero">
-                    <div className="heroDescription grids">
-                        <div className="heroDescriptionBox grids">
-                            <h1>The Music Shop</h1>
-                            <h3>Rock Your World. Loud and Clear.</h3>
-                            <p>Discover the ultimate gear for your music journey-electric guitars,
-                                drum kits, amps, pedals, and everything in between. From stage-ready
-                                essentials to pro-level accessories, we’ve got everything you need
-                                to keep the music alive.</p>
-                            <h3>Unleash Your Sound. Shop Now.</h3>
-                        </div>
-                    </div>
                     <div className="heroImage grids">
                         <img src="./images/hero-image.png" alt="hero image"/>
                     </div>
+                    <div className="heroHeader grids">
+                        <h1>The Music Shop</h1>
+                    </div>
+                    <div className="heroDescription grids">
+                        <h3>Rock Your World. Loud and Clear.</h3>
+                        <p>Discover the ultimate gear for your music journey-electric guitars,
+                            drum kits, amps, pedals, and everything in between. From stage-ready
+                            essentials to pro-level accessories, we’ve got everything you need
+                            to keep the music alive.</p>
+                        <h3>Unleash Your Sound. Shop Now.</h3>
+                    </div>
                     <div className="heroButton grids">
-                        <div className="heroShopButton">
+                        <button className="heroShopButton">
                             <Link to="/shop">
                                 <p>Shop</p>
                             </Link>
-                        </div>
+                        </button>
                     </div>
                 </div>
 
