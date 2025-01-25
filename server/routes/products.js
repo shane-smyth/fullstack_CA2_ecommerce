@@ -266,4 +266,10 @@ router.get(`/products`, (req, res) => {
     res.json(products)
 })
 
+// read the brand of the products in JSON
+router.get(`/brands`, (req, res) => {
+    const brands = [...new Set(products.map((product) => product.brand))]
+    res.json(brands)
+})
+
 module.exports = router

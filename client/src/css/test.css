@@ -1,8 +1,44 @@
+html {
+  overflow-x: hidden;
+  padding: 0px; }
+
 nav {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 1rem; }
+  padding: 1rem;
+  align-items: center; }
+
+.navLogo {
+  width: 45%; }
+
+#logo {
+  max-width: 50%;
+  height: auto;
+  padding: 5px;
+  transform: scale(1.33);
+  margin: 2%; }
+
+.navSearch {
+  display: flex;
+  align-items: center;
+  width: 50%;
+  justify-content: flex-start; }
+
+.navSearch input[type=text] {
+  margin-top: 8px;
+  font-size: 17px;
+  width: 60%;
+  text-align: center;
+  border-radius: 10px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  background-color: #ededed;
+  padding: 10px 15px; }
+
+#search:hover {
+  box-shadow: 0 0 5px 0 silver, 0 2px 4px 0 rgba(13, 9, 51, 0.2);
+  transition: transform 0.3s ease; }
 
 .navMenu {
   width: 25%;
@@ -10,13 +46,70 @@ nav {
   flex-direction: row;
   justify-content: space-between; }
 
-.hero img {
-  width: 100%; }
+.hero {
+  width: 100%;
+  height: 200px;
+  background-color: black;
+  background: url("../../public/images/band.jpg");
+  object-fit: contain;
+  object-position: 25% 25%;
+  margin: 15px;
+  display: flex; }
+
+.greeting {
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 1rem; }
+
+.homeDiv {
+  text-align: center; }
 
 .allProductsContainer {
   display: flex;
   flex-direction: column;
   align-items: center; }
+
+.allBrandsContainer ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; }
+
+.allBrandsContainer ul li {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: white;
+  width: 250px;
+  text-align: center;
+  padding: 10px;
+  margin: 40px;
+  transition: transform 0.3s ease; }
+
+.allBrandsContainer ul li:hover {
+  position: relative;
+  z-index: 5;
+  transform: scale(1.05); }
+
+.allBrandsContainer ul li img {
+  width: 100%;
+  height: auto;
+  padding-bottom: 10px; }
+
+.allBrandsContainer ul li p {
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  margin-top: auto; }
+
+.closingBrand {
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding-left: 2rem;
+  font-style: italic; }
 
 .cardBody {
   display: flex;
@@ -40,5 +133,3 @@ nav {
   display: flex;
   flex-direction: column;
   gap: 0.5rem; }
-
-/*# sourceMappingURL=test.css.map */

@@ -1,8 +1,61 @@
+$box-shadow: 0 0 5px 0 rgb(192, 192, 192), 0 2px 4px 0 rgba(13, 9, 51, 0.2);
+
+html {
+    overflow-x: hidden;
+    padding: 0px;
+}
+
 nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 1rem;
+    align-items: center;
+}
+
+.navLogo {
+    width: 45%;
+}
+
+#logo {
+    max-width: 50%;
+    height: auto;
+    padding: 5px;
+    transform: scale(1.33);
+    margin: 2%;
+}
+
+.navSearch {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    justify-content: flex-start;
+}
+.navSearch input[type=text] {
+    //padding: 6px;
+    margin-top: 8px;
+    font-size: 17px;
+    width: 60%;
+    text-align: center;
+    border-radius: 10px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background-color: #ededed;
+    padding: 10px 15px;
+    //outline: none;
+}
+//#search { //moved this into navSearch input instead
+//     border-radius: 10px;
+//     border: none;
+//     border-bottom: 2px solid #ccc;
+//     background-color: #ededed;
+//     padding: 10px 15px;
+//     font-size: 17px;
+//     //outline: none;
+// }
+#search:hover {
+    box-shadow: $box-shadow;
+    transition: transform 0.3s ease;
 }
 
 .navMenu {
@@ -11,16 +64,81 @@ nav {
     flex-direction: row;
     justify-content: space-between;
 }
-
-.hero img {
+.hero {
     width: 100%;
+    height: 200px;
+    background-color: black;
+    background: url("../../public/images/band.jpg");
+    object-fit: contain;
+    object-position: 25% 25%;
+    margin: 15px;
+    display: flex;
 }
 
+.greeting { // might move to where scss is after navSearch/search
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+}
+
+.homeDiv {
+    text-align: center;
+}
 
 .allProductsContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.allBrandsContainer ul {
+    list-style-type: none;
+    padding: 0;
+    //margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.allBrandsContainer ul li {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: white;
+    width: 250px;
+    //height: 350px;
+    text-align: center;
+    padding: 10px;
+    margin: 40px;
+    transition: transform 0.3s ease;
+}
+
+.allBrandsContainer ul li:hover {
+    position: relative;
+    z-index: 5;
+    transform: scale(1.05);
+}
+
+.allBrandsContainer ul li img {
+    width: 100%;
+    height: auto;
+    padding-bottom: 10px;
+}
+
+.allBrandsContainer ul li p {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    margin-top: auto;
+}
+
+.closingBrand {
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding-left: 2rem;
+    font-style: italic;
 }
 
 .cardBody {
@@ -35,6 +153,8 @@ nav {
     width: 100%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
+
+
 
 .cardBody img {
     width: 12rem;
