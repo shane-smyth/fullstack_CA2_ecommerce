@@ -3,32 +3,25 @@ import {BrowserRouter, Route, Routes} from "react-router-dom"
 
 import "bootstrap/dist/css/bootstrap.css"
 import "./css/test.css"
+import "./css/navBar.css"
+import "./css/home.css"
 
 import Home from "./components/Home.js"
-import NavBar from "./components/NavBar.js"
-import Footer from "./components/Footer.js"
+import Main from "./components/Main.js"
 
 
 export default class App extends Component {
     render() {
         return (
             <BrowserRouter>
-                <div>
-                    <header>
-                        <NavBar/>
-                    </header>
+                <Routes>
+                    <Route exact path="/" component={Home}/>
+                    <Route exact path="/home" component={Home}/>
+                    <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>}/>
+                </Routes>
 
-                    <Routes>
-                        <Route exact path="/" component={Home}/>
-                        <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>}/>
-                    </Routes>
+                <Main/>
 
-                    <Home/>
-
-                    <footer>
-                        <Footer/>
-                    </footer>
-                </div>
             </BrowserRouter>
         )
     }

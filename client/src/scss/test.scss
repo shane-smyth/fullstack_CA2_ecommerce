@@ -1,19 +1,6 @@
-nav {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 1rem;
-}
-
-.navMenu {
-    width: 25%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-.hero img {
-    width: 100%;
+* {
+    background: white;
+    color: #283142;
 }
 
 
@@ -21,6 +8,7 @@ nav {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: black solid 1px;
 }
 
 .cardBody {
@@ -28,7 +16,8 @@ nav {
     flex-direction: row;
     align-items: flex-start;
     gap: 1rem;
-    background-color: #eaeaea;
+    //background-color: #eaeaea;
+    background: white;
     border-radius: 10px;
     padding: 1rem;
     margin: 1.5rem;
