@@ -8,6 +8,7 @@ let products =
             description: "Classic electric guitar with three single-coil pickups",
             price: 815,
             images: ["https://thumbs.static-thomann.de/thumb/padthumb600x600/pics/bdb/_59/595227/19267253_800.jpg"],
+            rating: 3,
             category: "Guitars",
             subcategory: "Electric Guitars",
             brand: "Fender",
@@ -264,6 +265,11 @@ let products =
 router.get(`/products`, (req, res) => {
     // console.log(req)
     res.json(products)
+})
+
+router.get(`/products/:id`, (req, res) => {
+    const selectedProduct = products.filter(product => product.productId === req.params.id);
+    res.json(selectedProduct[0])
 })
 
 module.exports = router

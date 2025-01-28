@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
-import DisplayAllProducts from "./DisplayAllProducts"
+import Shop from "./Shop.js"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
 
@@ -53,13 +53,9 @@ export default class Home extends Component {
                     </div>
                 </div>
 
-                <body>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At corporis ducimus eum exercitationem,
-                        ipsa iste iure, nesciunt nulla, quidem sapiente temporibus velit! Aperiam maxime neque officia,
-                        officiis quas sed voluptatum?</p>
-
-                    <DisplayAllProducts />
-                </body>
+                <div>
+                    <Shop/>
+                </div>
             </div>
         )
     }

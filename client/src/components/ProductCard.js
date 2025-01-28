@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import {Link} from "react-router-dom"
 
 
 export default class ProductCard extends Component {
@@ -12,21 +13,33 @@ export default class ProductCard extends Component {
         return (
             <div className="productCardBox">
                 {products.map((product, index) => (
-                    <div key={index} className="cardBody">
-                        <img
-                            src={product.images[0]}
-                            alt={`image of ${product.name}`}
-                        />
-                        <div className="productDetails">
-                            <p className="pBold">{product.name}</p>
-
-
-                            {product.stock <=0 ? <p style={{color: "red"}}>out of stock</p> : <p style={{color: "#28b845"}}>in stock</p>}
+                    <Link to={`/productPage/${product.productId}`} key={index}>
+                        <div key={index} className="cardBody">
+                            <div className="productCardImg">
+                                <img
+                                    src={product.images[0]}
+                                    alt={`image of ${product.name}`}
+                                />
+                            </div>
+                            <div className="productDetails">
+                                <h4>{product.name}</h4>
+                                <div className="starsBox"></div>
+                                <ul>
+                                    {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
+                                    {Object.entries(product.specifications).map(([key, value]) => (
+                                        <li key={key}>
+                                            {key}: {value}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div className="productPrice">
+                                <h4>€{product.price}</h4>
+                                {product.stock <= 0 ? <p style={{color: "red"}}>out of stock</p> :
+                                    <p style={{color: "#28b845"}}>in stock</p>}
+                            </div>
                         </div>
-                        <div className="productPrice">
-                            <p className="pBold">€{product.price}</p>
-                        </div>
-                    </div>
+                    </Link>
                 ))}
             </div>
         )
