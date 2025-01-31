@@ -111,7 +111,6 @@ nav {
 }
 .navLogo a {
   text-decoration: none;
-  color: inherit;
   padding: 0;
 }
 .navLogo p {
@@ -126,7 +125,6 @@ nav {
   display: flex;
   flex-direction: row;
   justify-content: center;
-
   gap: 2rem;
   background: #f1f1f1;
 }
@@ -150,4 +148,19 @@ nav {
   width: 70%;
   height: 70%;
   background: white;
+}
+
+.navMenuLinkP {
+  background: #f1f1f1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.navMenuLinkP p {
+  margin: 0;
+  font-size: 1.5rem;
+  background: #f1f1f1;
+}
+.navMenuLinkP a {
+  text-decoration: none;
 }

@@ -8,7 +8,6 @@ let products =
             description: "Classic electric guitar with three single-coil pickups",
             price: 815,
             images: ["https://thumbs.static-thomann.de/thumb/padthumb600x600/pics/bdb/_59/595227/19267253_800.jpg"],
-            rating: 3,
             category: "Guitars",
             subcategory: "Electric Guitars",
             brand: "Fender",

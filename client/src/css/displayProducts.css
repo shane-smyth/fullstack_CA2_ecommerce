@@ -1,9 +1,7 @@
 .allProductsContainer {
   display: flex;
   flex-direction: column;
-  width: 60%;
-  margin: auto;
-  border: green solid 1px; }
+  margin: auto; }
   @media (width < 900px) {
     .allProductsContainer {
       width: 90%; } }

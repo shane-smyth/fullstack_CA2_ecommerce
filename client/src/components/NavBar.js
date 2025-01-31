@@ -1,7 +1,5 @@
 import React, {Component} from "react"
 import {Link} from "react-router-dom"
-import axios from "axios"
-import { SERVER_HOST } from "../config/global_constants"
 
 import SearchBar from "./SearchBar.js"
 
@@ -27,6 +25,12 @@ export default class NavBar extends Component {
 
                 <div className="navMenu navBoxes">
                     <div className="menuIcons">
+                        <Link to="/" className="navMenuLinkP">
+                            <p>Home</p>
+                        </Link>
+                        <Link to="/shop" className="navMenuLinkP">
+                            <p>Shop</p>
+                        </Link>
                         <Link to="https://www.w3schools.com/howto/howto_css_searchbar.asp" className="navMenuLink">
                             <img src="./images/shopping-cart.png" alt="shopping basket logo"/>
                         </Link>

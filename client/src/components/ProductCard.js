@@ -26,7 +26,7 @@ export default class ProductCard extends Component {
                                 <div className="starsBox"></div>
                                 <ul>
                                     {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
-                                    {Object.entries(product.specifications).map(([key, value]) => (
+                                    {Object.entries(product.specifications).map(([key, value], index) => (
                                         <li key={key}>
                                             {key}: {value}
                                         </li>

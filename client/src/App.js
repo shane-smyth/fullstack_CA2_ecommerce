@@ -7,6 +7,7 @@ import "./css/navBar.css"
 import "./css/home.css"
 import "./css/displayProducts.css"
 import "./css/productPage.css"
+import "./css/shop.css"
 
 import Home from "./components/Home.js"
 import Footer from "./components/Footer.js"
