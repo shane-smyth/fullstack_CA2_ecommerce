@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
-// import ProductCard from "./ProductCard";
+import { Link } from "react-router-dom"
 
-export default class Test extends Component {
+export default class Brands extends Component {
 
     constructor(props) {
         super(props)
@@ -17,7 +17,9 @@ export default class Test extends Component {
         axios.get(`${SERVER_HOST}/brands`)
             .then(res => {
                 if (res.data) {
-                    this.setState({ brands: res.data })
+                    this.setState({
+                        brands: res.data
+                    })
                 }
                 else {
                     console.log("Brands not found.")
@@ -28,14 +30,23 @@ export default class Test extends Component {
     render() {
         return (
             <div className="allBrandsContainer">
+                <h2>Brands Offered</h2>
                 <ul>
-                    {this.state.brands.map((brand, index) => (
+                    {this.state.brands.slice(0,5).map((brand, index) => (
                         <li key={index}>
-                            <a><img src={`/images/${brand.toLowerCase()}.png`} alt={brand}/></a>
-                            <p>{brand}</p>
+                            <Link
+                                // to={`/shop/brand/${brand}`}>
+                                to={`/shop?brand=${encodeURIComponent(brand)}`}
+                            >
+                                <img src={`/images/${brand.toLowerCase()}.png`} alt={brand}/>
+                                <p>{brand}</p>
+                            </Link>
                         </li>
                     ))}
                 </ul>
+                <Link to="/shop">
+                    <p>.. and many more !</p>
+                </Link>
             </div>
         )
     }

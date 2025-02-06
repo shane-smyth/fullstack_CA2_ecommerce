@@ -266,6 +266,12 @@ router.get(`/products`, (req, res) => {
     res.json(products)
 })
 
+// getting selected product from shop page
+router.get(`/products/:id`, (req, res) => {
+    const selectedProduct = products.filter(product => product.productId === req.params.id);
+    res.json(selectedProduct[0])
+})
+
 // read the brand of the products in JSON
 router.get(`/brands`, (req, res) => {
     const brands = [...new Set(products.map((product) => product.brand))]

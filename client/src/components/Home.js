@@ -1,38 +1,71 @@
 import React, { Component } from "react"
-import DisplayAllProducts from "./DisplayAllProducts"
-import Brands from "./Brands"
+import { Link } from "react-router-dom"
+import Shop from "./Shop.js"
+import Categories from "./Categories.js"
+import Brands from "./Brands.js"
+import axios from "axios"
+import {SERVER_HOST} from "../config/global_constants"
+
 
 export default class Home extends Component {
     constructor(props) {
         super(props)
+
+        this.state = {
+            products: [],
+        }
+    }
+
+    componentDidMount() {
+        axios.get(`${SERVER_HOST}/products`)
+            .then(res => {
+                if (res.data) {
+                    this.setState({products: res.data})
+                }
+                else {
+                    console.log("Records not found.")
+                }
+            })
     }
 
     render() {
         return (
             <div>
-                <div className="greeting">
-                <h4>Welcome to EchoHARMONICS 𝄞⨾𓍢ִ໋</h4>
-            </div>
                 <div className="hero">
-                    {/*<img src="https://as1.ftcdn.net/v2/jpg/03/08/93/46/1000_F_308934657_5Q7cqp8BQSzrJ9DEJQ7G6bJfGAUJqETl.jpg"/>*/}
+                    <div className="heroImage grids">
+                        <img src="./images/hero-image.png" alt="hero image"/>
+                    </div>
+                    <div className="heroHeader grids">
+                        <h1>The Music Shop</h1>
+                    </div>
+                    <div className="heroDescription grids">
+                        <h3>Rock Your World. Loud and Clear.</h3>
+                        <p>Discover the ultimate gear for your music journey-electric guitars,
+                            drum kits, amps, pedals, and everything in between. From stage-ready
+                            essentials to pro-level accessories, we’ve got everything you need
+                            to keep the music alive.</p>
+                        <h3>Unleash Your Sound. Shop Now.</h3>
+                    </div>
+                    <div className="heroButton grids">
+                        <button className="heroShopButton">
+                            <Link to="/shop">
+                                <p>Shop</p>
+                            </Link>
+                        </button>
+                    </div>
                 </div>
 
-                <body>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. At corporis ducimus eum exercitationem,
-                        ipsa iste iure, nesciunt nulla, quidem sapiente temporibus velit! Aperiam maxime neque officia,
-                        officiis quas sed voluptatum?</p>
-                    <div className="homeDiv"><h2>Our Categories</h2></div>
+                <div>
+                    <Categories/>
+                </div>
 
-                    <DisplayAllProducts /><br/>
+                <div>
+                    <Brands/>
+                </div>
 
-                    <div className="homeDiv">
-                        <h2>Brands Offered</h2>
-                    </div>
-                    <Brands />
-                    <div className="closingBrand">
-                        <p>.. and many more !</p> {/* maybe this can be a hyperlink that goes to all products too ? */}
-                    </div>
-                </body>
+                {/*<div>*/}
+                {/*    <Shop/>*/}
+                {/*</div>*/}
             </div>
         )
     }

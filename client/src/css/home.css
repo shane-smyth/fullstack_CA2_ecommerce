@@ -1,0 +1,93 @@
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto auto;
+  height: 100%; }
+  @media (width < 800px) {
+    .hero {
+      grid-template-columns: 4fr 3fr; } }
+
+.heroImage {
+  grid-column: 1 / 2;
+  grid-row: 1 / 4;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+
+.heroImage img {
+  width: 80%; }
+
+.heroHeader {
+  grid-column: 2 / 3;
+  grid-row: 1;
+  width: 70%; }
+  @media (width < 800px) {
+    .heroHeader {
+      width: 95%; } }
+
+.heroHeader h1 {
+  font-size: 3.5rem;
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: #283142 solid 5px; }
+  @media (width < 1200px) {
+    .heroHeader h1 {
+      font-size: 2rem; } }
+
+.heroDescription {
+  grid-column: 2 / 3;
+  grid-row: 2;
+  width: 65%;
+  margin-left: 5%; }
+  @media (width < 800px) {
+    .heroDescription {
+      width: 90%; } }
+
+.heroDescription h3 {
+  font-size: 2.5rem; }
+  @media (width < 1200px) {
+    .heroDescription h3 {
+      font-size: 1.5rem; } }
+
+.heroDescription p {
+  font-size: 1.5rem; }
+  @media (width < 1200px) {
+    .heroDescription p {
+      font-size: 1rem; } }
+
+.heroButton {
+  grid-column: 2 / 3;
+  grid-row: 3;
+  width: 70%;
+  display: flex;
+  justify-content: center;
+  align-items: center; }
+  @media (width < 800px) {
+    .heroButton {
+      width: 95%; } }
+
+.heroButton button {
+  width: 8rem;
+  height: 3rem;
+  border: none;
+  border-radius: 1.5rem;
+  background: rgba(40, 49, 66, 0.83);
+  transition: box-shadow 0.3s ease;
+  margin: 0; }
+
+.heroButton button:hover {
+  background: rgba(40, 49, 66, 0.7);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+  transition: box-shadow 0.3s ease; }
+
+.heroButton button a {
+  text-decoration: none;
+  margin: 0; }
+
+.heroButton button a p {
+  text-align: center;
+  margin: 0;
+  background: transparent;
+  color: white; }
+
+/*# sourceMappingURL=home.css.map */
