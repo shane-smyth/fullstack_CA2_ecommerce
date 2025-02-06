@@ -268,7 +268,7 @@ router.get(`/products`, (req, res) => {
 
 // getting selected product from shop page
 router.get(`/products/:id`, (req, res) => {
-    const selectedProduct = products.filter(product => product.productId === req.params.id);
+    const selectedProduct = products.filter(product => product.productId === req.params.id)
     res.json(selectedProduct[0])
 })
 
