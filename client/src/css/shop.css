@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 2fr 5fr;
   grid-template-rows: auto auto;
-  width: 90%;
+  width: 75%;
   margin: auto; }
 
 .shopHeader {
@@ -19,7 +19,63 @@
   grid-row: 2;
   padding-top: 2rem; }
 
-.boxes {
-  border: black solid 1px; }
+.filtersBox {
+  width: 90%;
+  margin: auto; }
+
+.headingFilterProducts {
+  font-size: 4rem;
+  font-weight: bold;
+  padding-bottom: 1rem; }
+
+.headingFilterProducts span {
+  color: #5b5b5b;
+  font-size: 3rem; }
+
+.filterSortBar {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
+  padding-bottom: 1rem; }
+
+.sortDropdown {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: center; }
+
+.sortDropdown select {
+  position: sticky;
+  top: 0;
+  border-radius: 4.5px;
+  border-width: 2px; }
+
+.filterTag {
+  color: black;
+  padding-bottom: 2rem; }
+
+.filterSection {
+  padding-bottom: 1.5rem; }
+
+.filterSection h6 {
+  font-weight: bold;
+  color: black; }
+
+.filterSection button {
+  border: none;
+  font-weight: bold;
+  font-size: 16.2px; }
+
+.filterSection input[type="checkbox"] {
+  transform: scale(1.6); }
+
+.filterSection input[type="number"] {
+  border-radius: 4.5px;
+  border-color: #b6b6b6;
+  border-style: solid;
+  padding: 6px;
+  text-align: center;
+  border-width: thin; }
 
 /*# sourceMappingURL=shop.css.map */

@@ -13,7 +13,7 @@ export default class ProductCard extends Component {
         return (
             <div className="productCardBox">
                 {products.map((product, index) => (
-                    <Link to={`/productPage/${product.productId}`} key={index}>
+                    <Link to={`/productPage/${product._id}`} key={index}>
                         <div key={index} className="cardBody">
                             <div className="productCardImg">
                                 <img
@@ -26,9 +26,9 @@ export default class ProductCard extends Component {
                                 <div className="starsBox"></div>
                                 <ul>
                                     {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
-                                    {Object.entries(product.specifications).map(([key, value], index) => (
-                                        <li key={key}>
-                                            {key}: {value}
+                                    {product.specifications.map((spec, index) => (
+                                        <li key={index}>
+                                            <strong>{spec.key}:</strong> {spec.value}
                                         </li>
                                     ))}
                                 </ul>

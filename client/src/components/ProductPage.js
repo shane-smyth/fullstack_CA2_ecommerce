@@ -34,9 +34,14 @@ export default class ProductPage extends Component {
                     <div className="productName boxes">
                         <h2>{product.name}</h2>
                     </div>
+
+
                     <div className="productImgBox boxes">
-                        <img src={product.images} alt=""/>
+                        {(product.images || []).map((image, index) => (
+                            <img src={image} key={index} />
+                        ))}
                     </div>
+
 
                     <div className="productMainBox boxes">
                         <h1>€{product.price}</h1>
@@ -71,9 +76,9 @@ export default class ProductPage extends Component {
                         <h2>{product.subcategory}</h2>
                         <ul>
                             {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
-                            {Object.entries(specs).map(([key, value]) => (
-                                <li key={key}>
-                                    {key}: {value}
+                            {(product.specifications || []).map((spec, index) => (
+                                <li key={index}>
+                                    <strong>{spec.key}:</strong> {spec.value}
                                 </li>
                             ))}
                         </ul>

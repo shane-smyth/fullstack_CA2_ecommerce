@@ -24,7 +24,19 @@
     grid-column: 1 / 2;
     grid-row: 2;
     width: 100%;
+    box-sizing: border-box;
 }
+.productImgBox {
+    grid-column: 1 / 2;
+    grid-row: 2;
+    width: 100%;
+}
+
+
+
+
+
+
 
 .productMainBox { //https://stackoverflow.com/questions/50794795/sticky-position-on-css-grid-items
     grid-column: 2 / 2;

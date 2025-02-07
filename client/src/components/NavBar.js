@@ -2,11 +2,13 @@ import React, {Component} from "react"
 import {Link} from "react-router-dom"
 
 import SearchBar from "./SearchBar.js"
+import {ACCESS_LEVEL_GUEST, ACCESS_LEVEL_ADMIN} from "../config/global_constants"
 
 export default class NavBar extends Component {
     constructor(props) {
         super(props)
     }
+
 
     render() {
         return (
@@ -31,12 +33,26 @@ export default class NavBar extends Component {
                         <Link to="/shop" className="navMenuLinkP">
                             <p>Shop</p>
                         </Link>
+
+                        {sessionStorage.accessLevel >= ACCESS_LEVEL_ADMIN ?
+                            <p>Admin</p>
+                        :
+                            null
+                        }
+
                         <Link to="https://www.w3schools.com/howto/howto_css_searchbar.asp" className="navMenuLink">
                             <img src="./images/shopping-cart.png" alt="shopping basket logo"/>
                         </Link>
-                        <Link to="" className="navMenuLink">
-                            <img src="./images/user.png" alt="user logo"/>
-                        </Link>
+
+                        {Number(sessionStorage.accessLevel) > ACCESS_LEVEL_GUEST ?
+                            <Link to="/account" className="navMenuLink">
+                                <img src="./images/user.png" alt="user logo"/>
+                            </Link>
+                        :
+                            <Link to="/login" className="navMenuLink">
+                                <img src="./images/user.png" alt="user logo"/>
+                            </Link>
+                        }
                     </div>
                 </div>
             </nav>
