@@ -18,4 +18,16 @@ router.get(`/products/:id`, (req, res) => {
 })
 
 
+// read the brand of the products
+router.get(`/brands`, (req, res) => {
+    productsModel.distinct("brand", (error, data) => {
+        if (error) {
+            res.json({error: "Error fetching brands"})
+        }
+        else {
+            res.json(data)
+        }
+    })
+})
+
 module.exports = router

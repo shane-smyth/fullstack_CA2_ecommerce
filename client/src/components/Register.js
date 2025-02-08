@@ -62,6 +62,11 @@ export default class Register extends Component {
                     }
                     else {
                         console.log("User registered successfully")
+
+                        localStorage.name = res.data.name
+                        localStorage.accessLevel = res.data.accessLevel
+                        localStorage.token = res.data.token
+
                         this.setState({isRegistered: true})
                     }
                 }

@@ -34,7 +34,7 @@ export default class NavBar extends Component {
                             <p>Shop</p>
                         </Link>
 
-                        {sessionStorage.accessLevel >= ACCESS_LEVEL_ADMIN ?
+                        {localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ?
                             <p>Admin</p>
                         :
                             null
@@ -44,7 +44,7 @@ export default class NavBar extends Component {
                             <img src="./images/shopping-cart.png" alt="shopping basket logo"/>
                         </Link>
 
-                        {Number(sessionStorage.accessLevel) > ACCESS_LEVEL_GUEST ?
+                        {Number(localStorage.accessLevel) > ACCESS_LEVEL_GUEST ?
                             <Link to="/account" className="navMenuLink">
                                 <img src="./images/user.png" alt="user logo"/>
                             </Link>

@@ -2,7 +2,7 @@ import React, {Component} from "react"
 import {Redirect, Link} from "react-router-dom"
 import axios from "axios"
 
-import {ACCESS_LEVEL_GUEST, SERVER_HOST} from "../config/global_constants"
+import {SERVER_HOST} from "../config/global_constants"
 
 
 export default class Login extends Component
@@ -38,22 +38,18 @@ export default class Login extends Component
         })
             .then(res =>
             {
-                // default if not logged in
-                sessionStorage.name = "GUEST"
-                sessionStorage.accessLevel = ACCESS_LEVEL_GUEST
-                if(res.data)
-                {
+                if(res.data) {
                     if (res.data.errorMessage) {
                         console.log(res.data.errorMessage)
                     }
                     else {
                         console.log("User logged in")
 
-                        sessionStorage.name = res.data.name
-                        sessionStorage.accessLevel = res.data.accessLevel
+                        localStorage.name = res.data.name
+                        localStorage.accessLevel = res.data.accessLevel
+                        localStorage.token = res.data.token
 
                         this.setState({isLoggedIn:true})
-
                         window.location.reload(true) //https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
                     }
                 }
@@ -91,7 +87,7 @@ export default class Login extends Component
                     onChange={this.handleChange}
                 /><br/><br/>
 
-                <Link value="Login" className="green-button" onClick={this.handleSubmit}>Login</Link>
+                <button className="green-button" onClick={this.handleSubmit}>Login</button>
                 <br/>
                 <Link className="red-button" to="/">Cancel</Link>
                 <br/>

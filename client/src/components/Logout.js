@@ -33,10 +33,9 @@ export default class Logout extends Component
                     else
                     {
                         console.log("User logged out")
-                        sessionStorage.clear()
 
-                        sessionStorage.name = "GUEST"
-                        sessionStorage.accessLevel = ACCESS_LEVEL_GUEST
+                        localStorage.clear()
+
                         this.setState({isLoggedIn:false})
 
                         window.location.reload(true) //https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react

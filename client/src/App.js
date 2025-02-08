@@ -23,9 +23,11 @@ import Account from "./components/Account"
 import {ACCESS_LEVEL_GUEST} from "./config/global_constants"
 
 
-if (typeof sessionStorage.accessLevel === "undefined") {
-    sessionStorage.name = "GUEST"
-    sessionStorage.accessLevel = ACCESS_LEVEL_GUEST
+
+if (typeof localStorage.accessLevel === "undefined") {
+    localStorage.name = "GUEST"
+    localStorage.accessLevel = ACCESS_LEVEL_GUEST
+    localStorage.token = null
 }
 
 

@@ -1,5 +1,8 @@
 const router = require('express').Router()
 const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const JWT_PRIVATE_KEY = fs.readFileSync(process.env.JWT_PRIVATE_KEY_FILENAME, 'utf8')
 
 const usersModel = require('../models/users')
 
@@ -40,7 +43,8 @@ router.post(`/users/register`, (req, res) => {
                 // Save user with hashed password
                 usersModel.create({ username, email, password: hash }, (error, data) => {
                     if (data) {
-                        res.json({ username: data.username })
+                        const token = jwt.sign({email: data.email, accessLevel:data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
+                        res.json({ username: data.username, accessLevel:data.accessLevel, token:token})
                     } else {
                         res.json({ errorMessage: "User was not registered" })
                     }
@@ -62,7 +66,8 @@ router.post(`/users/login`, (req, res) => {
         if (uniqueData) {
             bcrypt.compare(password, uniqueData.password, (err, isMatch) => {
                 if (isMatch) {
-                    res.json({ name: uniqueData.username, accessLevel: uniqueData.accessLevel })
+                    const token = jwt.sign({email: uniqueData.email, accessLevel:uniqueData.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
+                    res.json({ name: uniqueData.username, accessLevel: uniqueData.accessLevel, token:token})
                 }
                 else {
                     res.status(400).json({ errorMessage: "Invalid email or password" })
