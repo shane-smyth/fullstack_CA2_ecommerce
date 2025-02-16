@@ -88,4 +88,16 @@ router.post(`/users/logout`, (req,res) => {
 })
 
 
+// delete user
+router.delete(`/users/delete/:id`, (req, res) => {
+    const userId = req.params.id
+    usersModel.findByIdAndDelete(userId, (error, data) => {
+        if (error || !data) {
+            res.json({errorMessage: "User not found"})
+        }
+        res.json({data})
+    })
+})
+
+
 module.exports = router

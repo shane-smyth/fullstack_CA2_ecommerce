@@ -35,8 +35,10 @@ export default class NavBar extends Component {
                         </Link>
 
                         {localStorage.accessLevel >= ACCESS_LEVEL_ADMIN ?
-                            <p>Admin</p>
-                        :
+                            <Link to="/adminPage" className="navMenuLinkP">
+                                <p>Admin</p>
+                            </Link>
+                            :
                             null
                         }
 
@@ -48,7 +50,7 @@ export default class NavBar extends Component {
                             <Link to="/account" className="navMenuLink">
                                 <img src="./images/user.png" alt="user logo"/>
                             </Link>
-                        :
+                            :
                             <Link to="/login" className="navMenuLink">
                                 <img src="./images/user.png" alt="user logo"/>
                             </Link>

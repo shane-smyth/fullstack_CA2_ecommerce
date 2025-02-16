@@ -23,7 +23,7 @@ let productsSchema = new mongoose.Schema({
     images: {
         type: [String],
         required: true,
-        match: /^https?:\/\/.+\.(jpg|jpeg|png|webp|gif)$/i //https://stackoverflow.com/questions/4098415/use-regex-to-get-image-url-in-html-js
+        match: /^https?:\/\/.+\.$/i //https://stackoverflow.com/questions/4098415/use-regex-to-get-image-url-in-html-js
     },
     rating: {
         type: Number,
@@ -32,20 +32,15 @@ let productsSchema = new mongoose.Schema({
         default: 0
     },
     category: {
-        type: [String],
-        required: [true, "at least one category is required"],
-        enum: {
-            values: ["Guitar", "Drums & Percussion", "Keyboards & Pianos", "Bass", "Amplifiers", "Synthesizers"],
-            message: "Invalid category"
-        }
+        type: String,
+        ref: `categories`,
+        required: [true, "category is required"],
+
     },
     subcategory: {
-        type: [String],
+        type: String,
+        ref: `subcategories`,
         required: [true, "Subcategory is required"],
-        enum: {
-            values: ["Electric Guitar", "Acoustic Guitar", "Digital Pianos", "Acoustic Drum Kits", "Guitar Amplifiers", "Analog Synthesizers", "Cymbals", "Acoustic-Electric Guitars", "Stage Pianos", "Electric Bass Guitar", ],
-            message: "Invalid subcategory"
-        }
     },
     brand: {
         type: String,
@@ -57,7 +52,7 @@ let productsSchema = new mongoose.Schema({
         required: [true, "Stock is required"],
         min: [0, "Stock cannot be negative"],
     },
-    specifications: [{key: String, value: String}]
+    specifications: [{ key: String, value: String }]
 }, {
     collection: `products`,
 })

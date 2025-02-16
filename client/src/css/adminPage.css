@@ -1,0 +1,22 @@
+.wholeAdminContent {
+  width: 60%;
+  margin: auto; }
+
+.adminButtons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: #f1f1f1 2px solid; }
+
+.adminButtons button {
+  width: 33%;
+  text-align: center;
+  font-size: 2rem;
+  border: none;
+  background: none; }
+
+/*# sourceMappingURL=adminPage.css.map */

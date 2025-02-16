@@ -13,7 +13,7 @@ export default class ProductCard extends Component {
         return (
             <div className="productCardBox">
                 {products.map((product, index) => (
-                    <Link to={`/productPage/${product._id}`} key={index}>
+                    <Link to={`/shop/productPage/${product._id}`} key={index}>
                         <div key={index} className="cardBody">
                             <div className="productCardImg">
                                 <img

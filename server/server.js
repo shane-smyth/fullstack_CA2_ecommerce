@@ -30,7 +30,7 @@ app.listen(process.env.SERVER_PORT, () => {
 app.use((req, res, next) => { next(createError(404)) })
 
 // Other errors
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     console.error(err.message)
     if (!err.statusCode) {
         err.statusCode = 500
