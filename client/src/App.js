@@ -18,11 +18,11 @@ import Shop from "./components/Shop.js"
 import NavBar from "./components/NavBar.js"
 import ProductPage from "./components/ProductPage"
 import LoggedInRoute from "./components/LoggedInRoute"
+import AdminRoute from "./components/AdminRoute"
 import Login from "./components/Login"
 import Register from "./components/Register"
 import Account from "./components/Account"
 import AdminPage from "./components/AdminPage"
-import NewProduct from "./components/NewProduct"
 
 import {ACCESS_LEVEL_GUEST} from "./config/global_constants"
 
@@ -51,8 +51,7 @@ export default class App extends Component {
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/register" component={Register} />
                     <LoggedInRoute exact path="/account" component={Account} />
-                    <LoggedInRoute exact path="/adminPage" component={AdminPage} />
-                    <LoggedInRoute exact path="/adminPage/newProduct" component={NewProduct} />
+                    <AdminRoute exact path="/adminPage" component={AdminPage} />
                     <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>} />
 
                 </Switch>
