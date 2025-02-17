@@ -23,7 +23,6 @@ import Register from "./components/Register"
 import Account from "./components/Account"
 import AdminPage from "./components/AdminPage"
 import NewProduct from "./components/NewProduct"
-import DeleteUser from "./components/DeleteUser";
 
 import {ACCESS_LEVEL_GUEST} from "./config/global_constants"
 
@@ -54,7 +53,6 @@ export default class App extends Component {
                     <LoggedInRoute exact path="/account" component={Account} />
                     <LoggedInRoute exact path="/adminPage" component={AdminPage} />
                     <LoggedInRoute exact path="/adminPage/newProduct" component={NewProduct} />
-                    <LoggedInRoute exact path="/adminPage/users/delete/:id" component={DeleteUser} />
                     <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>} />
 
                 </Switch>

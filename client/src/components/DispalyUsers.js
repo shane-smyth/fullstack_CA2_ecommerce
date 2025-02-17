@@ -11,8 +11,10 @@ export default class DisplayUsers extends Component {
 
         this.state = {
             users: [],
+            selectedUsers: [],
             selectedUser: null,
-            testShowUsers: false,
+            searchQuery: "",
+            sortBy: "None Selected",
         }
     }
 
@@ -21,7 +23,8 @@ export default class DisplayUsers extends Component {
             .then(res => {
                 if (res.data) {
                     this.setState({
-                        users: res.data
+                        users: res.data,
+                        selectedUsers: res.data,
                     })
                 }
                 else {
@@ -33,18 +36,8 @@ export default class DisplayUsers extends Component {
     handleShowUser = (user) => {
         this.setState({ selectedUser: user })
     }
-
     closeModal = () => {
         this.setState({ selectedUser: null })
-    }
-
-    handleEdit = (user) => {
-        console.log("Edit")
-        this.setState({
-            testShowUsers: true,
-            selectedUser: user
-        })
-
     }
 
     confirmDelete = (userId) => {
@@ -74,12 +67,57 @@ export default class DisplayUsers extends Component {
             })
     }
 
+
+    handleSearchChange = (e) => {
+        this.setState({
+            searchQuery: e.target.value
+        }, this.updateFilteredProducts)
+    }
+
+    handleSortChange = (e) => {
+        this.setState({
+            sortBy: e.target.value
+        }, this.updateFilteredProducts)
+    }
+
+    updateFilteredProducts = () => {
+        let { users, searchQuery, sortBy } = this.state
+
+        let filteredUsers = users.filter(user =>
+            user.username.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+
+        if (sortBy === "A-Z") {
+            filteredUsers.sort((a, b) => a.username.localeCompare(b.username))
+        } else if (sortBy === "Z-A") {
+            filteredUsers.sort((a, b) => b.username.localeCompare(a.username))
+        }
+
+        this.setState({ selectedUsers: filteredUsers })
+    }
+
+
     render() {
-        const { users , selectedUser} = this.state
+        const { selectedUsers , selectedUser } = this.state
 
         return (
             <div className="userCardBox">
-                {users.map((user, index) => (
+                <input
+                    type="text"
+                    className="input"
+                    placeholder="Search"
+                    onChange={this.handleSearchChange}
+                />
+
+                <select onChange={this.handleSortChange}>
+                    <option>None Selected</option>
+                    <option>A-Z</option>
+                    <option>Z-A</option>
+                </select>
+
+                <br/>
+                <br/>
+                {selectedUsers.map((user, index) => (
                     <div className="cardBody" key={index}>
                         <div className="userImg" onClick={() => this.handleShowUser(user)}>
                             {/*{console.log(user.pfp)}*/}

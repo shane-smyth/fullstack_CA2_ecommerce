@@ -71,4 +71,17 @@ router.post(`/products/newProduct`, (req, res) => {
     }
 })
 
+
+// delete product
+router.delete(`/products/delete/:id`, (req, res) => {
+    const productId = req.params.id
+    productsModel.findByIdAndDelete(productId, (error, data) => {
+        if (error || !data) {
+            res.json({errorMessage: "Product not found"})
+        }
+        res.json({data})
+    })
+})
+
+
 module.exports = router

@@ -78,4 +78,32 @@
     .productPrice p {
       font-size: 0.8rem; } }
 
+.adminProdCardBox {
+  margin: auto;
+  width: 80%;
+  padding-top: 1rem; }
+
+.adminProdCardImg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12rem;
+  height: 12rem;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin-left: 1rem; }
+  @media (width < 1100px) {
+    .adminProdCardImg {
+      width: 8rem;
+      height: 8rem; } }
+
+.adminProdCardImg img {
+  max-width: 90%;
+  height: 90%;
+  object-fit: contain; }
+
+.adminProdDetails {
+  width: 50%; }
+
 /*# sourceMappingURL=displayProducts.css.map */

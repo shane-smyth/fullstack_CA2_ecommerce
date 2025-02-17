@@ -22,7 +22,6 @@ export default class NewProduct extends Component {
             brand: "",
             stock: 0,
             specifications: [{key: "", value: ""}],
-            productAdded: false,
         }
     }
 
@@ -130,135 +129,142 @@ export default class NewProduct extends Component {
     }
 
     render() {
+        const { onClose } = this.props
 
         return (
-            <form >
-                {this.state.productAdded ? <Redirect to="/adminPage" /> : null}
+            <div className="modalOverlay">
+                <div className="modalContent">
+                    <button className="closeButton" onClick={onClose}>✖</button>
 
-                <h2>Add New Product</h2>
+                    <br/>
+                    <br/>
+                    <form >
+                        <h2>Add New Product</h2>
 
-                <input
-                    name="name"
-                    type="text"
-                    placeholder="Product Name"
-                    value={this.state.name}
-                    onChange={this.handleChange}
-                    ref={input => this.inputToFocus = input}
-                />
-
-                <input
-                    name="description"
-                    type="text"
-                    placeholder="Description"
-                    value={this.state.description}
-                    onChange={this.handleChange}
-                />
-
-                <input
-                    name="price"
-                    type="number"
-                    placeholder="Price"
-                    value={this.state.price}
-                    onChange={this.handleChange}
-                    min="0"
-                />
-
-                <input
-                    type="file"
-                    accept="image/*"
-                    capture="camera"
-                    multiple
-                    onChange={this.handleImageChange}
-                />
-
-                <input
-                    name="rating"
-                    type="number"
-                    placeholder="Raitng"
-                    value={this.state.rating}
-                    onChange={this.handleChange}
-                    min="0"
-                    max="5"
-                />
-
-                <select onChange={this.handleCategoryChange}>
-                    <option value="none" disabled selected hidden>Select Category</option>
-                    {this.state.categories.map((category) => (
-                        <option key={category} value={category}>{category}</option>
-                    ))}
-                    <option value="new">+ New Category</option>
-                </select>
-                {this.state.selectedCategory === "new" && (
-                    <input
-                        type="text"
-                        placeholder="Enter New Category"
-                        onChange={this.handleChange}
-                    />
-                )}
-
-                <select onChange={this.handleSubcategoryChange}>
-                    <option value="none" disabled selected hidden>Select Subcategory</option>
-                    {this.state.subcategories.map((subcategory) => (
-                        <option key={subcategory} value={subcategory}>{subcategory}</option>
-                    ))}
-                    <option value="new">+ New Subcategory</option>
-                </select>
-                {this.state.selectedSubcategory === "new" && (
-                    <input
-                        type="text"
-                        placeholder="Enter New Subcategory"
-                        onChange={this.handleChange}
-                    />
-                )}
-
-                <select onChange={this.handleBrandChange}>
-                    <option value="none" disabled selected hidden>Select Brand</option>
-                    {this.state.brands.map((brand) => (
-                        <option key={brand} value={brand}>{brand}</option>
-                    ))}
-                    <option value="new">+ New Brand</option>
-                </select>
-                {this.state.brand === "new" && (
-                    <input
-                        type="text"
-                        placeholder="Enter New Brand"
-                        onChange={this.handleChange}
-                    />
-                )}
-
-                <input
-                    name="stock"
-                    type="number"
-                    placeholder="Stock"
-                    value={this.state.stock}
-                    onChange={this.handleChange}
-                    min="0"
-                />
-
-                <h3>specs</h3>
-                {this.state.specifications.map((spec, index) => (
-                    <div key={index}>
                         <input
+                            name="name"
                             type="text"
-                            name="key"
-                            placeholder="Key"
-                            value={spec.key}
-                            onChange={(event) => this.handleSpecificationChange(index, event)}
+                            placeholder="Product Name"
+                            value={this.state.name}
+                            onChange={this.handleChange}
+                            ref={input => this.inputToFocus = input}
                         />
-                        <input
-                            type="text"
-                            name="value"
-                            placeholder="Value"
-                            value={spec.value}
-                            onChange={(event) => this.handleSpecificationChange(index, event)}
-                        />
-                        <button type="button" onClick={() => this.removeSpecification(index)}>Remove</button>
-                    </div>
-                ))}
-                <button type="button" onClick={this.addSpecification}>Add</button>
 
-                <button type="button" onClick={this.handleSubmit}>Submit</button>
-            </form>
+                        <input
+                            name="description"
+                            type="text"
+                            placeholder="Description"
+                            value={this.state.description}
+                            onChange={this.handleChange}
+                        />
+
+                        <input
+                            name="price"
+                            type="number"
+                            placeholder="Price"
+                            value={this.state.price}
+                            onChange={this.handleChange}
+                            min="0"
+                        />
+
+                        <input
+                            type="file"
+                            accept="image/*"
+                            capture="camera"
+                            multiple
+                            onChange={this.handleImageChange}
+                        />
+
+                        <input
+                            name="rating"
+                            type="number"
+                            placeholder="Raitng"
+                            value={this.state.rating}
+                            onChange={this.handleChange}
+                            min="0"
+                            max="5"
+                        />
+
+                        <select onChange={this.handleCategoryChange}>
+                            <option value="none" disabled selected hidden>Select Category</option>
+                            {this.state.categories.map((category) => (
+                                <option key={category} value={category}>{category}</option>
+                            ))}
+                            <option value="new">+ New Category</option>
+                        </select>
+                        {this.state.selectedCategory === "new" && (
+                            <input
+                                type="text"
+                                placeholder="Enter New Category"
+                                onChange={this.handleChange}
+                            />
+                        )}
+
+                        <select onChange={this.handleSubcategoryChange}>
+                            <option value="none" disabled selected hidden>Select Subcategory</option>
+                            {this.state.subcategories.map((subcategory) => (
+                                <option key={subcategory} value={subcategory}>{subcategory}</option>
+                            ))}
+                            <option value="new">+ New Subcategory</option>
+                        </select>
+                        {this.state.selectedSubcategory === "new" && (
+                            <input
+                                type="text"
+                                placeholder="Enter New Subcategory"
+                                onChange={this.handleChange}
+                            />
+                        )}
+
+                        <select onChange={this.handleBrandChange}>
+                            <option value="none" disabled selected hidden>Select Brand</option>
+                            {this.state.brands.map((brand) => (
+                                <option key={brand} value={brand}>{brand}</option>
+                            ))}
+                            <option value="new">+ New Brand</option>
+                        </select>
+                        {this.state.brand === "new" && (
+                            <input
+                                type="text"
+                                placeholder="Enter New Brand"
+                                onChange={this.handleChange}
+                            />
+                        )}
+
+                        <input
+                            name="stock"
+                            type="number"
+                            placeholder="Stock"
+                            value={this.state.stock}
+                            onChange={this.handleChange}
+                            min="0"
+                        />
+
+                        <h3>specs</h3>
+                        {this.state.specifications.map((spec, index) => (
+                            <div key={index}>
+                                <input
+                                    type="text"
+                                    name="key"
+                                    placeholder="Key"
+                                    value={spec.key}
+                                    onChange={(event) => this.handleSpecificationChange(index, event)}
+                                />
+                                <input
+                                    type="text"
+                                    name="value"
+                                    placeholder="Value"
+                                    value={spec.value}
+                                    onChange={(event) => this.handleSpecificationChange(index, event)}
+                                />
+                                <button type="button" onClick={() => this.removeSpecification(index)}>Remove</button>
+                            </div>
+                        ))}
+                        <button type="button" onClick={this.addSpecification}>Add</button>
+
+                        <button type="button" onClick={this.handleSubmit}>Submit</button>
+                    </form>
+                </div>
+            </div>
         )
     }
 }

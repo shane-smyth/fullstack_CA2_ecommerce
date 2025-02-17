@@ -31,10 +31,18 @@
   width: 25%;
   gap: 0.5rem; }
 
-.redButton {
+.greenButton, .redButton {
   text-align: center;
   font-size: 1.4rem;
   border: none; }
+
+.greenButton {
+  background-color: #2dc738;
+  border-radius: 0.8rem; }
+
+.greenButton:hover {
+  transition: box-shadow 0.3s ease;
+  background-color: rgba(45, 199, 56, 0.82); }
 
 .redButton {
   background-color: #dc3545;
@@ -86,7 +94,6 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  border: 1px solid black;
   gap: 3rem;
   margin: auto; }
 
