@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import axios from "axios"
 import {Link, Redirect} from "react-router-dom"
-import { SERVER_HOST } from "../config/global_constants";
+import { SERVER_HOST } from "../config/global_constants"  
 
 export default class ProductPage extends Component {
 
@@ -10,6 +10,9 @@ export default class ProductPage extends Component {
 
         this.state = {
             product: [],
+            quantity: 1,
+            showOutOfStockModal: false, 
+            showQuantityLimitModal: false,
         }
     }
 
@@ -24,9 +27,48 @@ export default class ProductPage extends Component {
             })
     }
 
+    handleAddToCart = () => {
+        const { product , quantity } = this.state
+
+        if (product.stock <= 0) {
+            // console.log("out of stock showing modal")  
+            this.setState({ 
+                showOutOfStockModal: true 
+            })  
+            return  
+        }
+
+        if (quantity > product.stock) {
+            // console.log("over stock showing modal")  
+            this.setState({   
+                showQuantityLimitModal: true 
+            })  
+            return  
+        }
+
+        this.props.history.push({
+            pathname: "/cart",
+            state: { product , quantity },
+        })
+    }
+
+    handleQuantityChange = (e) => {
+        this.setState({
+            quantity: parseInt(e.target.value)
+        })
+    }
+
+    closeOutOfStockModal = () => {
+        this.setState({ showOutOfStockModal: false })  
+    }  
+
+    closeQuantityLimitModal = () => {
+        this.setState({   showQuantityLimitModal: false })  
+    }  
+
     render() {
-        const { product } = this.state
-        console.log(product)
+        const { product, quantity, showOutOfStockModal,   showQuantityLimitModal } = this.state
+        // console.log(product)
 
         let specs = product.specifications || []
 
@@ -42,14 +84,15 @@ export default class ProductPage extends Component {
 
                     <div className="productMainBox boxes">
                         <h1>€{product.price}</h1>
-
                         <h3>{product.description}</h3>
 
-                        {product.stock <= 0 ? <p style={{color: "red"}}>out of stock</p> :
+                        {product.stock <= 0 ? <p style={{color: "red"}}>Out of stock</p> :
                             <p style={{color: "#28b845"}}>In stock</p>}
 
                         <div className="productPageAddToBasketBox boxes">
-                            <select>
+                            <select
+                                value={quantity}
+                                onChange={this.handleQuantityChange}>
                                 <option value={1}>1</option>
                                 <option value={2}>2</option>
                                 <option value={3}>3</option>
@@ -59,12 +102,11 @@ export default class ProductPage extends Component {
                                 <option value={7}>7</option>
                                 <option value={8}>8</option>
                                 <option value={9}>9</option>
+                                <option value={10}>10</option>
                             </select>
 
-                            <button>
-                                <Link>
-                                    <p>ADD TO BASKET</p>
-                                </Link>
+                            <button onClick={this.handleAddToCart}>
+                                    <p>ADD TO BAG</p>
                             </button>
                         </div>
                     </div>
@@ -81,6 +123,40 @@ export default class ProductPage extends Component {
                         </ul>
                     </div>
                 </div>
+
+                {showOutOfStockModal && (
+                    // console.log("out of stock modal"),
+                    <div id="outOfStockModal" className="modal active">
+                        <div className="modal-content">
+                            <span className="close" onClick={this.closeOutOfStockModal}>
+                                &times;
+                            </span>
+                            <h2>Out of Stock</h2>
+                            <p>Sorry ! This product is currently out of stock and cannot be added to your cart</p>
+                            <button onClick={this.closeOutOfStockModal}>OK</button>
+                        </div>
+                    </div>
+                )}
+
+                {  showQuantityLimitModal && (
+                    // console.log("over stock modal"),
+                    <div id="quantityLimitModal" className="modal active">
+                        <div className="modal-content">
+                            {/*<span className="close" onClick={this.closeQuantityLimitModal}>*/}
+                            {/*    &times;*/}
+                            {/*</span>*/}
+                            <h2>Stock Limited</h2>
+                            <p>
+                                You cannot add more than {product.stock} of this product to your cart !
+                            </p>
+                            <button onClick={this.closeQuantityLimitModal}>OK</button>
+                        </div>
+                    </div>
+                )}
+
+                {(showOutOfStockModal ||   showQuantityLimitModal) && (
+                    <div id="modalOverlay" className="active"></div>
+                )}
 
                 <div className="otherProducts boxes">
                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias animi blanditiis consequuntur

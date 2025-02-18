@@ -6,9 +6,7 @@ import {SERVER_HOST} from "../config/global_constants"
 import queryString from "query-string" // https://www.npmjs.com/package/query-string
 
 const cleanSearch = (str) => {
-    return str
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "")
+    return str.toLowerCase().replace(/[^a-z0-9]/g, "")
 }
 
 export default class Shop extends Component {

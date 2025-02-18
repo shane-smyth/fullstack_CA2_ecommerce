@@ -12,6 +12,7 @@ let products =
             subcategory: "Electric Guitars",
             brand: "Fender",
             stock: 4,
+            rating: 4,
             specifications: {
                 body: "Alder",
                 neck: "Maple",
@@ -29,6 +30,7 @@ let products =
             subcategory: "Electric Guitars",
             brand: "Gibson",
             stock: 0,
+            rating: 5,
             specifications: {
                 body: "Mahogany",
                 neck: "Mahogany",
@@ -46,6 +48,7 @@ let products =
             subcategory: "Digital Pianos",
             brand: "Yamaha",
             stock: 20,
+            rating: 3,
             specifications: {
                 keys: "88 fully weighted",
                 polyphony: "192 notes",
@@ -63,6 +66,7 @@ let products =
             subcategory: "Acoustic Drum Kits",
             brand: "Pearl",
             stock: 8,
+            rating: 2,
             specifications: {
                 shellMaterial: "Poplar/Asian mahogany",
                 configuration: "5-piece",
@@ -80,6 +84,7 @@ let products =
             subcategory: "Acoustic Guitars",
             brand: "Martin",
             stock: 3,
+            rating: 1,
             specifications: {
                 body: "Solid Sitka Spruce top, East Indian Rosewood back and sides",
                 neck: "Select Hardwood",
@@ -97,6 +102,7 @@ let products =
             subcategory: "Guitar Amplifiers",
             brand: "Boss",
             stock: 30,
+            rating: 4,
             specifications: {
                 power: "50 watts",
                 speakers: "12-inch custom",
@@ -114,6 +120,7 @@ let products =
             subcategory: "Analog Synthesizers",
             brand: "Korg",
             stock: 12,
+            rating: 5,
             specifications: {
                 voices: "4-voice polyphony",
                 oscillators: "Analog VCOs + digital multi-engine",
@@ -131,6 +138,7 @@ let products =
             subcategory: "Cymbals",
             brand: "Zildjian",
             stock: 10,
+            rating: 3,
             specifications: {
                 contents: "14-inch hi-hats, 16-inch crash, 20-inch ride",
                 material: "Cast bronze",
@@ -149,6 +157,7 @@ let products =
             subcategory: "Acoustic-Electric Guitars",
             brand: "Taylor",
             stock: 6,
+            rating: 2,
             specifications: {
                 body: "Solid Sitka Spruce top, layered Rosewood back and sides",
                 neck: "Tropical Mahogany",
@@ -166,6 +175,7 @@ let products =
             subcategory: "Stage Pianos",
             brand: "Nord",
             stock: 4,
+            rating: 4,
             specifications: {
                 keys: "88 fully weighted",
                 sections: "Piano, Organ, Synth",
@@ -183,6 +193,7 @@ let products =
             subcategory: "Electric Bass Guitars",
             brand: "Fender",
             stock: 10,
+            rating: 1,
             specifications: {
                 body: "Alder",
                 neck: "Maple",
@@ -200,6 +211,7 @@ let products =
             subcategory: "Acoustic Drum Kits",
             brand: "Tama",
             stock: 9,
+            rating: 3,
             specifications: {
                 shellMaterial: "Poplar",
                 configuration: "5-piece",
@@ -217,6 +229,7 @@ let products =
             subcategory: "Digital Pianos",
             brand: "Casio",
             stock: 18,
+            rating: 5,
             specifications: {
                 keys: "88 weighted",
                 polyphony: "256 notes",
@@ -234,6 +247,7 @@ let products =
             subcategory: "Electric Bass Guitars",
             brand: "Ibanez",
             stock: 7,
+            rating: 2,
             specifications: {
                 body: "Okoume",
                 neck: "5-piece Jatoba/Walnut",
@@ -251,6 +265,7 @@ let products =
             subcategory: "Electric Guitars",
             brand: "Yamaha",
             stock: 8,
+            rating: 4,
             specifications: {
                 body: "Mahogany",
                 neck: "Mahogany",

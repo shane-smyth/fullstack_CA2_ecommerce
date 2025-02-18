@@ -31,7 +31,7 @@ export default class NavBar extends Component {
                         <Link to="/shop" className="navMenuLinkP">
                             <p>Shop</p>
                         </Link>
-                        <Link to="https://www.w3schools.com/howto/howto_css_searchbar.asp" className="navMenuLink">
+                        <Link to="/cart" className="navMenuLink">
                             <img src="./images/shopping-cart.png" alt="shopping basket logo"/>
                         </Link>
                         <Link to="" className="navMenuLink">

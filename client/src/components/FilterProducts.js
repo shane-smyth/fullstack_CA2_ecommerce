@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
 import ProductCard from "./ProductCard"
+import DisplayAllProducts from "./DisplayAllProducts";
 
 export default class FilterProducts extends Component {
 
@@ -217,6 +218,7 @@ export default class FilterProducts extends Component {
                         <label>&ensp;€</label>
                     </div>
 
+                    {/*stock*/}
                     <div className="filterSection">
                         <h6>Availability</h6>
                         <input

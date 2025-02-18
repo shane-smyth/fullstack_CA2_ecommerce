@@ -14,6 +14,7 @@ import Footer from "./components/Footer.js"
 import Shop from "./components/Shop.js"
 import NavBar from "./components/NavBar.js"
 import ProductPage from "./components/ProductPage"
+import ShoppingCart from "./components/ShoppingCart"
 
 
 export default class App extends Component {
@@ -31,6 +32,7 @@ export default class App extends Component {
                     {/*<Route exact path="/shop/:category/:brand" component={Shop} />*/}
                     {/*<Route path="/shop/:category?/:brand?" component={Shop} />*/}
                     <Route exact path="/productPage/:id" component={ProductPage} />
+                    <Route exact path="/cart" component={ShoppingCart} />
                     <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>} />
 
                 </Switch>
