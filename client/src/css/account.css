@@ -1,0 +1,35 @@
+.loginRegisterForm {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%; }
+
+.loginRegisterForm form {
+  width: 25%;
+  border: 1px solid #5b5b5b;
+  border-radius: 1rem;
+  padding: 2rem; }
+
+.loginRegisterCentre {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 1rem; }
+
+.accountPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%; }
+
+.accountContainer {
+  width: 50%; }
+
+.boxes {
+  border: 1px solid black; }
+
+/*# sourceMappingURL=account.css.map */
