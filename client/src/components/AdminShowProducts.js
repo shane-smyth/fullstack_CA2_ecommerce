@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
 import NewProduct from "./NewProduct";
+import EditProduct from "./EditProduct";
 
 export default class AdminShowProducts extends Component {
     constructor(props) {
@@ -13,6 +14,8 @@ export default class AdminShowProducts extends Component {
             searchQuery: "",
             sortBy: "None Selected",
             addProduct: false,
+            editProduct: false,
+            selectedProduct: null,
         }
     }
 
@@ -90,20 +93,30 @@ export default class AdminShowProducts extends Component {
         this.setState({ selectedProducts: filteredProducts })
     }
 
-    openModal = () => {
+    openAddModal = () => {
         this.setState({addProduct: true})
     }
-    closeModal = () => {
+    closeAddModal = () => {
         this.setState({ addProduct: false })
+    }
+
+    openEditModal = (product) => {
+        this.setState({
+            editProduct: true,
+            selectedProduct: product,
+        })
+    }
+    closeEditModal = () => {
+        this.setState({ editProduct: false })
     }
 
 
     render() {
-        const { selectedProducts, addProduct } = this.state
-        
-        return(
+        const { selectedProducts, addProduct, editProduct } = this.state
+
+        return (
             <div className="adminProdCardBox">
-                <button onClick={this.openModal}>Add Product</button>
+                <button onClick={this.openAddModal}>Add Product</button>
 
                 <input
                     type="text"
@@ -123,7 +136,7 @@ export default class AdminShowProducts extends Component {
                 <br/>
                 <br/>
                 {selectedProducts.map((product, index) => (
-                    <div className="cardBody" key={index}>
+                    <div className="cardBody" key={index} onClick={() => this.openEditModal(product)}>
                         <div className="adminProdCardImg">
                             <img src={product.images[0]} alt={product.name} />
                         </div>
@@ -131,18 +144,18 @@ export default class AdminShowProducts extends Component {
                         <div className="adminProdDetails">
                             <h4>{product.name}</h4>
                             <h3>€{product.price}</h3>
-                            {product.stock <= 0 ? <p style={{color: "red"}}>out of stock</p> :
-                                <p style={{color: "#28b845"}}>in stock</p>}
+                            <p>Stock Level: {product.stock}</p>
                         </div>
 
                         <div className="userEdits">
-                            <button className="greenButton">Edit</button>
+                            {/*<button className="greenButton">Edit</button>*/}
                             <button onClick={() => this.confirmDelete(product._id)} className="redButton">Delete</button>
                         </div>
                     </div>
                 ))}
 
-                {addProduct && <NewProduct onClose={this.closeModal} />}
+                {addProduct && <NewProduct onClose={this.closeAddModal} />}
+                {editProduct && <EditProduct onClose={this.closeEditModal} product={this.state.selectedProduct}/>}
             </div>
         )
     }

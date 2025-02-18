@@ -72,6 +72,19 @@ router.post(`/products/newProduct`, (req, res) => {
 })
 
 
+// edit product
+router.put(`/products/edit/:_id`, (req, res) => {
+    const updatedProduct = req.body
+    console.log(updatedProduct)
+    productsModel.findByIdAndUpdate(req.params._id, {$set: req.body}, (error, data) => {
+        if (error) {
+            res.json({error: "Error updating product"})
+        }
+        res.json(data)
+    })
+})
+
+
 // delete product
 router.delete(`/products/delete/:id`, (req, res) => {
     const productId = req.params.id

@@ -9,9 +9,19 @@ export default class Account extends Component {
 
     render() {
         return (
-            <div>
-                <h1>Account</h1>
-                <Logout />
+            <div className="accountPage boxes">
+                <div className="accountContainer">
+                    <div className="accountPageHeader boxes">
+                        <Logout />
+                        <h1>Account</h1>
+                    </div>
+                    <div className="accountPageBody boxes">
+                        <h2>name</h2>
+                    </div>
+                    <div className="accountHistory boxes">
+                        <h2>Account History</h2>
+                    </div>
+                </div>
             </div>
         )
     }

@@ -23,7 +23,7 @@ let productsSchema = new mongoose.Schema({
     images: {
         type: [String],
         required: true,
-        match: /^https?:\/\/.+\.$/i //https://stackoverflow.com/questions/4098415/use-regex-to-get-image-url-in-html-js
+        match: [/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/, "Invalid image URL"]//https://stackoverflow.com/questions/4098415/use-regex-to-get-image-url-in-html-js
     },
     rating: {
         type: Number,

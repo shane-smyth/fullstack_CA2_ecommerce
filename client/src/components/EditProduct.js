@@ -1,27 +1,25 @@
-import React, { Component } from "react"
+import React, {Component} from "react"
 import axios from "axios"
-import { Link, Redirect } from "react-router-dom"
-import { SERVER_HOST } from "../config/global_constants"
+import {SERVER_HOST} from "../config/global_constants"
 
-
-export default class NewProduct extends Component {
+export default class EditProduct extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
-            name: "",
-            description: "",
-            price: 0,
-            images: [],
-            rating: 0,
+            name: props.product.name,
+            description: props.product.description,
+            price: props.product.price,
+            images: props.product.images || [],
+            rating: props.product.rating,
             categories: [],
             subcategories: [],
             brands: [],
-            selectedCategory: [],
-            selectedSubcategory: [],
-            brand: "",
-            stock: 0,
-            specifications: [{key: "", value: ""}],
+            selectedCategory: props.product.category,
+            selectedSubcategory: props.product.subcategory,
+            brand: props.product.brand,
+            stock: props.product.stock,
+            specifications: props.product.specifications || [{key: "", value: ""}],
         }
     }
 
@@ -31,33 +29,24 @@ export default class NewProduct extends Component {
         axios.get(`${SERVER_HOST}/products`)
             .then(res => {
                 if (res.data) {
-                    // console.log("Received data:", res.data)
-
                     const products = res.data
-                    const brands = [...new Set(products.flatMap((product) => product.brand))]
-                    const categories = [...new Set(products.flatMap((product) => product.category))]
-                    const subcategories = [...new Set(products.flatMap((product) => product.subcategory))]
+                    const brands = [...new Set(products.flatMap(product => product.brand))]
+                    const categories = [...new Set(products.flatMap(product => product.category))]
+                    const subcategories = [...new Set(products.flatMap(product => product.subcategory))]
 
-                    this.setState({
-                        categories: categories,
-                        subcategories: subcategories,
-                        brands: brands,
-                    })
-                }
-                else {
+                    this.setState({categories, subcategories, brands})
+                } else {
                     console.log("Records not found.")
                 }
             })
     }
 
-
     handleChange = (e) => {
-        this.setState({ [e.target.name]: e.target.value })
+        this.setState({[e.target.name]: e.target.value})
     }
 
 
     handleImageChange = (e) => {
-        //https://www.js-craft.io/blog/using-url-createobjecturl-to-create-uploaded-image-previews-in-javascript/#:~:text=createObjectURL()%20method.,the%20URL%20is%20explicitly%20released.
         const urls = Array.from(e.target.files).map(file => window.URL.createObjectURL(file))
         this.setState(prevState => ({images: [...prevState.images, ...urls]}))
     }
@@ -67,34 +56,32 @@ export default class NewProduct extends Component {
         }))
     }
 
+
     handleCategoryChange = (e) => {
         this.setState({ selectedCategory: e.target.value })
         console.log(this.state.selectedCategory)
     }
-
     handleSubcategoryChange = (e) => {
         this.setState({ selectedSubcategory: e.target.value })
     }
-
     handleBrandChange = (e) => {
         this.setState({ brand: e.target.value })
     }
 
+
     handleSpecificationChange = (index, e) => {
-        const { name, value } = e.target
+        const {name, value} = e.target
         const specifications = [...this.state.specifications]
         specifications[index][name] = value
-        this.setState({ specifications })
+        this.setState({specifications})
     }
-
     addSpecification = () => {
-        this.setState((prevState) => ({
+        this.setState(prevState => ({
             specifications: [...prevState.specifications, {key: "", value: ""}],
         }))
     }
-
     removeSpecification = (index) => {
-        this.setState((prevState) => ({
+        this.setState(prevState => ({
             specifications: prevState.specifications.filter((_, i) => i !== index),
         }))
     }
@@ -102,46 +89,39 @@ export default class NewProduct extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
 
-        const productObj = {
-            name : this.state.name,
-            description : this.state.description,
-            price : this.state.price,
-            images : this.state.images,
+        const updatedProduct = {
+            name: this.state.name,
+            description: this.state.description,
+            price: this.state.price,
+            images: this.state.images,
             rating: this.state.rating,
             category: this.state.selectedCategory,
             subcategory: this.state.selectedSubcategory,
-            brand : this.state.brand,
-            stock : this.state.stock,
-            specifications : this.state.specifications,
+            brand: this.state.brand,
+            stock: this.state.stock,
+            specifications: this.state.specifications,
         }
-
-        axios.post(`${SERVER_HOST}/products/newProduct`, productObj)
+        console.log("Updated Product:", updatedProduct); // Log the payload
+        axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, updatedProduct)
             .then(res => {
                 if (res.data) {
-                    if (res.data.errorMessage) {
-                        console.log(res.data.errorMessage)
-                    }
-                    else {
-                        console.log(`Product Added`)
-                    }
-                }
-                else {
-                    console.log(`Adding Product Failed`)
+                    console.log("Product updated successfully")
+                    this.props.onClose()
+                } else {
+                    console.log("Updating product failed")
                 }
             })
     }
 
     render() {
-        const { onClose } = this.props
-
+        const {onClose} = this.props
         return (
             <div className="modalOverlay">
                 <div className="modalContent">
-                    <button className="closeButton" onClick={onClose}>&#x2715;</button> {/* https://stackoverflow.com/questions/5353461/unicode-character-for-x-cancel-close */}
+                    <button className="closeButton" onClick={onClose}>&#x2715;</button>
+                    <h2>Edit Product</h2>
 
-                    <form >
-                        <h2>Add New Product</h2>
-
+                    <form onSubmit={this.handleSubmit}>
                         <div className="labelInput">
                             <label>Name:</label>
                             <input
@@ -150,7 +130,7 @@ export default class NewProduct extends Component {
                                 placeholder="Product Name"
                                 value={this.state.name}
                                 onChange={this.handleChange}
-                                ref={input => this.inputToFocus = input}
+                                ref={input => (this.inputToFocus = input)}
                             />
                         </div>
 
@@ -200,7 +180,7 @@ export default class NewProduct extends Component {
                             <input
                                 name="rating"
                                 type="number"
-                                placeholder="Raitng"
+                                placeholder="Rating"
                                 value={this.state.rating}
                                 onChange={this.handleChange}
                                 min="0"
@@ -210,7 +190,7 @@ export default class NewProduct extends Component {
 
                         <div className="labelInput">
                             <label>Category:</label>
-                            <select onChange={this.handleCategoryChange}>
+                            <select onChange={this.handleCategoryChange} value={this.state.selectedCategory}>
                                 <option value="none" disabled selected hidden>Select Category</option>
                                 {this.state.categories.map((category) => (
                                     <option key={category} value={category}>{category}</option>
@@ -228,7 +208,7 @@ export default class NewProduct extends Component {
 
                         <div className="labelInput">
                             <label>Subcategory:</label>
-                            <select onChange={this.handleSubcategoryChange}>
+                            <select onChange={this.handleSubcategoryChange} value={this.state.selectedSubcategory}>
                                 <option value="none" disabled selected hidden>Select Subcategory</option>
                                 {this.state.subcategories.map((subcategory) => (
                                     <option key={subcategory} value={subcategory}>{subcategory}</option>
@@ -246,7 +226,7 @@ export default class NewProduct extends Component {
 
                         <div className="labelInput">
                             <label>Brand:</label>
-                            <select onChange={this.handleBrandChange}>
+                            <select onChange={this.handleBrandChange} value={this.state.brand}>
                                 <option value="none" disabled selected hidden>Select Brand</option>
                                 {this.state.brands.map((brand) => (
                                     <option key={brand} value={brand}>{brand}</option>
@@ -297,7 +277,7 @@ export default class NewProduct extends Component {
                         <button type="button" onClick={this.addSpecification}>Add</button>
 
                         <div className="formAction">
-                            <button type="button" className="greenButton" onClick={this.handleSubmit}>Submit</button>
+                            <button className="greenButton" type="submit">Update</button>
                         </div>
                     </form>
                 </div>

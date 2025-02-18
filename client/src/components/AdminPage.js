@@ -24,8 +24,8 @@ export default class AdminPage extends Component {
         return (
             <div>
                 <div className="wholeAdminContent adminButtons boxes">
-                    <button onClick={() => this.handleComponentChange("ProductManagement")}><h2>Mange Products</h2></button>
-                    <button onClick={() => this.handleComponentChange("UserManagement")}><h2>Mange Users</h2></button>
+                    <button onClick={() => this.handleComponentChange("ProductManagement")}><h2>Products</h2></button>
+                    <button onClick={() => this.handleComponentChange("UserManagement")}><h2>Users</h2></button>
                     <button onClick={() => this.handleComponentChange("Orders")}><h2>Orders</h2></button>
                 </div>
                 <div className="wholeAdminContent boxes">

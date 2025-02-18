@@ -56,7 +56,7 @@ export default class Logout extends Component
 
                 {!this.state.isLoggedIn ? <Redirect to="/"/> : null}
 
-                <button value="Log out" className="red-button" onClick={this.handleSubmit}>Logout</button>
+                <button value="Log out" className="redButton" onClick={this.handleSubmit}>Logout</button>
             </div>
         )
     }

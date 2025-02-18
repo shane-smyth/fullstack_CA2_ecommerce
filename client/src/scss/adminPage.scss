@@ -26,3 +26,139 @@
 .boxes {
   //border: black solid 1px;
 }
+
+
+
+
+// -------- Admin Products View -----------
+//.adminProdContainer {
+//    display: flex;
+//    flex-direction: column;
+//    margin: auto;
+//}
+
+.adminProdCardBox {
+  margin: auto;
+  //border: 1px solid #000;
+  width: 80%;
+  padding-top: 1rem;
+}
+
+.adminProdCardImg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 12rem;
+  height: 12rem;
+  //border: red solid 1px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  margin-left: 1rem;
+  @media (width < 1100px) {
+    width: 8rem;
+    height: 8rem;
+  }
+}
+.adminProdCardImg img {
+  max-width: 90%;
+  height: 90%;
+  object-fit: contain;
+}
+
+.adminProdDetails {
+  width: 50%;
+}
+
+
+// ------- New Products Modal -------------
+.newProdForm form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+.newProdForm form input[type=text] {
+  width: 10rem;
+  border: 1px solid #5b5b5b;
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+}
+
+
+
+// ------- Edit Product ----------
+.labelInput {
+  margin-bottom: 0.5rem;
+}
+.labelInput label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+.labelInput input, .labelInput textarea, .labelInput select {
+  width: 100%;
+  padding: 0.2rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.imagePreview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.imageContainer {
+  position: relative;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 5px;
+}
+.imageInputContainer {
+
+}
+.previewImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.removeImageButton {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.specificationGroup {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.specificationGroup input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 0.5rem;
+}
+
+.formAction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  //border: 1px solid black;
+}

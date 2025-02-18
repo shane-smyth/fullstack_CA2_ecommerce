@@ -80,56 +80,74 @@ export default class Register extends Component {
         let formInputsState = this.validate()
 
         return (
-            <form className="form-container" onSubmit={this.handleSubmit}>
-                {this.state.isRegistered ? <Redirect to="/" /> : null}
+            <div className="loginRegisterForm">
+                <form onSubmit={this.handleSubmit}>
+                    {this.state.isRegistered ? <Redirect to="/" /> : null}
 
-                <h2>Register</h2>
+                    <div className="loginRegisterCentre">
+                        <h1>Register</h1>
+                    </div>
 
-                <input
-                    name="username"
-                    type="text"
-                    placeholder="Username"
-                    value={this.state.username}
-                    onChange={this.handleChange}
-                    ref = {input => this.inputToFocus = input}
+                    <div className="labelInput">
+                        <label>Username:</label>
+                        <input
+                            name="username"
+                            type="text"
+                            placeholder="Username"
+                            value={this.state.username}
+                            onChange={this.handleChange}
+                            ref = {input => this.inputToFocus = input}
 
-                />
+                        />
+                    </div>
 
-                <input
-                    name="email"
-                    type="email"
-                    placeholder="Email"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                />
-
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                />
-
-                <input
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={this.state.confirmPassword}
-                    onChange={this.handleChange}
-                />
+                    <div className="labelInput">
+                        <label>Email:</label>
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="Email"
+                            value={this.state.email}
+                            onChange={this.handleChange}
+                        />
+                    </div>
 
 
-                <input
-                    type="submit"
-                    value="Register"
-                    className="btn btn-success"
-                    disabled={!Object.keys(formInputsState).every(index => formInputsState[index])}
-                />
-                <Link type="button" to={"/login"}>Login</Link>
-                <br/>
-                <Link type="button" to={"/"}>Cancel</Link>
-            </form>
+                    <div className="labelInput">
+                        <label>Password:</label>
+                        <input
+                            name="password"
+                            type="password"
+                            placeholder="Password"
+                            value={this.state.password}
+                            onChange={this.handleChange}
+                        />
+                    </div>
+
+                    <div className="labelInput">
+                        <label>Confirm Password:</label>
+                        <input
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Confirm Password"
+                            value={this.state.confirmPassword}
+                            onChange={this.handleChange}
+                        />
+                    </div>
+
+
+                    <div className="loginRegisterCentre">
+                        <input
+                            type="submit"
+                            value="Register"
+                            className="greenButton"
+                            disabled={!Object.keys(formInputsState).every(index => formInputsState[index])}
+                        />
+                        <Link type="button" to={"/login"}>Login</Link>
+                        <Link type="button" to={"/"}>Cancel</Link>
+                    </div>
+                </form>
+            </div>
         )
     }
 }

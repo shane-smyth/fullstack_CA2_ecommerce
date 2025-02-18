@@ -11,6 +11,7 @@ import "./css/productPage.css"
 import "./css/shop.css"
 import "./css/adminPage.css"
 import "./css/displayUsers.css"
+import "./css/account.css"
 
 import Home from "./components/Home.js"
 import Footer from "./components/Footer.js"

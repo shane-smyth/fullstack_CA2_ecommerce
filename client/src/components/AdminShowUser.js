@@ -13,7 +13,7 @@ export default class AdminShowUser extends Component {
         return (
             <div className="modalOverlay">
                 <div className="modalContent">
-                    <button className="closeButton" onClick={onClose}>✖</button>
+                    <button className="closeButton" onClick={onClose}>&#x2715;</button>
                     <div className="modalBody">
                         <div className="userModalDetailsBox">
                             <img className="userImg" src={user.pfp} alt="User Profile" />
