@@ -147,7 +147,7 @@ export default class ProductPage extends Component {
                             {/*</span>*/}
                             <h2>Stock Limited</h2>
                             <p>
-                                You cannot add more than {product.stock} of this product to your cart !
+                                You cannot add more than <strong>{product.stock}</strong> of this product to your cart !
                             </p>
                             <button onClick={this.closeQuantityLimitModal}>OK</button>
                         </div>

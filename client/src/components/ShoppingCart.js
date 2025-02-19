@@ -8,48 +8,77 @@ export default class ShoppingCart extends Component {
             cartItems: [],
             showQuantityLimitModal: false,
             productWithLimit: null,
+            showRemoveConfirmModal: false,
+            productToRemove: null,
         }
     }
 
     componentDidMount() {
+        const cartItemsString = sessionStorage.getItem("cartItems")
+        const cartItems = cartItemsString ? this.stringToCart(cartItemsString) : [] 
+
         const { product, quantity } = this.props.location.state || {}
 
         if (product) {
-            this.setState((prevState) => ({
-                cartItems: [...prevState.cartItems , {
-                    ...product, quantity
-                }],
-            }))
+            const existingProductIndex = cartItems.findIndex((item) => item.productId === product.productId) 
+
+            if (existingProductIndex === -1) {
+                cartItems.push({ ...product, quantity }) 
+                console.log("added to cart") 
+            }
+
+            sessionStorage.setItem("cartItems", this.cartToString(cartItems))
         }
+
+        this.setState({
+            cartItems
+        }) 
     }
 
-    handleRemoveItem = (productId) => {
-        this.setState((prevState) => ({
-            cartItems: prevState.cartItems.filter(product => product.productId !== productId),
-            })
-        )
+    cartToString = (cartItems) => {
+        return cartItems
+            .map((item) =>
+                    `${item.productId},${item.name},${item.price},${item.stock},${item.quantity},${item.images[0]},${item.subcategory}`
+            ).join(" ") 
+    } 
+
+    stringToCart = (cartItemsString) => {
+        return cartItemsString.split(" ").map((itemString) => {
+            const [productId, name, price, stock, quantity, image, subcategory] = itemString.split(",") 
+            return {
+                productId,
+                name,
+                price: parseFloat(price),
+                stock: parseInt(stock),
+                quantity: parseInt(quantity),
+                images: [image],
+                subcategory,
+            } 
+        }) 
     }
 
     handleUpdateQuantity = (productId, newQty) => {
-
-        const { cartItems } = this.state
-        const product = cartItems.find((product) => product.productId === productId)
+        const { cartItems } = this.state 
+        const product = cartItems.find((product) => product.productId === productId) 
 
         if (newQty > product.stock) {
             this.setState({
                 showQuantityLimitModal: true,
                 productWithLimit: product,
-            })
-            return
+            }) 
+            return 
         }
 
         this.setState((prevState) => {
-            const updatedItems = prevState.cartItems.map(product =>
+            const updatedItems = prevState.cartItems.map((product) =>
                 product.productId === productId ? { ...product, quantity: newQty } : product
-            )
-            return { cartItems: updatedItems }
-        })
-    }
+            ) 
+
+            sessionStorage.setItem("cartItems", this.cartToString(updatedItems))
+
+            return { cartItems: updatedItems } 
+        }) 
+    } 
 
     closeQuantityLimitModal = () => {
         this.setState({
@@ -58,19 +87,52 @@ export default class ShoppingCart extends Component {
         })
     }
 
+    handleRemoveItem = (productId) => {
+        this.setState((prevState) => {
+            const updatedItems = prevState.cartItems.filter((product) => product.productId !== productId) 
+
+            sessionStorage.setItem("cartItems", this.cartToString(updatedItems))
+
+            return { cartItems: updatedItems } 
+        }) 
+    } 
+
+    openRemoveConfirmModal = (productID) => {
+        const productToRemove = this.state.cartItems.find((product) => product.productId === productID)
+        this.setState({
+             showRemoveConfirmModal: true,
+            productToRemove,
+        })
+    }
+
+    closeRemoveConfirmModal = () => {
+        this.setState({
+             showRemoveConfirmModal: false,
+            productToRemove: null,
+        })
+    }
+
+    removeProduct = () => {
+        const { productToRemove } = this.state
+        if (productToRemove) {
+            this.handleRemoveItem(productToRemove.productId)
+            this.closeRemoveConfirmModal()
+        }
+    }
+
     handleCheckout = () => { //
         this.props.history.push("/checkout")
     }
 
     render() {
-        const { cartItems, showQuantityLimitModal, productWithLimit } = this.state
+        const { cartItems, showQuantityLimitModal, productWithLimit,  showRemoveConfirmModal, productToRemove } = this.state
         const isCartEmpty = cartItems.length === 0
 
         return (
             <div className="cartPageContainer">
                 <h2>Shopping Cart</h2>
                 {isCartEmpty ?
-                    <p style={{ textAlign: "center", color: "#888" }}>
+                    <p className="emptyCartMessage" >
                         Your shopping cart is empty.
                     </p>:
                     <>
@@ -88,16 +150,14 @@ export default class ShoppingCart extends Component {
                             {cartItems.map((product) => (
                                 <tr key={product.productId}>
                                     <td>
-                                        <div className="product-info">
                                             <img
                                                 src={product.images[0]}
                                                 alt={product.name}
-                                                style={{ width: '50px', height: '50px', marginRight: '10px' }}
+                                                className="productCartImage"
                                             />
                                             <div>
                                                 <div>{product.name}</div>
                                             </div>
-                                        </div>
                                     </td>
                                     <td>€{product.price.toFixed(2)}</td>
                                     <td>
@@ -121,7 +181,7 @@ export default class ShoppingCart extends Component {
                                     </td>
                                     <td>€{(product.price * product.quantity).toFixed(2)}</td>
                                     <td>
-                                        <button onClick={() => this.handleRemoveItem(product.productId)}>
+                                        <button onClick={() => this.openRemoveConfirmModal(product.productId)}>
                                             Remove
                                         </button>
                                     </td>
@@ -153,12 +213,12 @@ export default class ShoppingCart extends Component {
                 {showQuantityLimitModal && (
                     <div id="quantityLimitModal" className="modal active">
                         <div className="modal-content">
-                            <span className="close" onClick={this.closeQuantityLimitModal}>
-                                &times;
-                            </span>
+                            {/*<span className="close" onClick={this.closeQuantityLimitModal}>*/}
+                            {/*    &times*/}
+                            {/*</span>*/}
                             <h2>Stock Limited</h2>
                             <p>
-                                You cannot add more than {productWithLimit.stock} of this product to
+                                You cannot add more than <strong>{productWithLimit.stock}</strong> of this product to
                                 your cart !
                             </p>
                             <button onClick={this.closeQuantityLimitModal}>OK</button>
@@ -166,7 +226,23 @@ export default class ShoppingCart extends Component {
                     </div>
                 )}
 
-                {showQuantityLimitModal && <div id="modalOverlay" className="active"></div>}
+                { showRemoveConfirmModal && (
+                    <div id="removeConfirmationModal" className="modal active">
+                        <div className="modal-content">
+                            <h2>Delete Product</h2>
+                            <p>
+                                Are you sure you want to remove <strong>'{productToRemove?.name}'</strong> from your cart?<br/>
+                                <br/>(This cannot not be undone)
+                            </p>
+                            <button onClick={this.removeProduct}>Yes</button><br/>
+                            <button onClick={this.closeRemoveConfirmModal}>Cancel</button>
+                        </div>
+                    </div>
+                )}
+
+                {(showQuantityLimitModal ||  showRemoveConfirmModal) && (
+                    <div id="modalOverlay" className="active"></div>
+                )}
             </div>
         )
     }
