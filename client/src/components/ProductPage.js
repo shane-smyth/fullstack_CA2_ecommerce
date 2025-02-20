@@ -8,6 +8,7 @@ export default class ProductPage extends Component {
         super(props)
         this.state = {
             product: [],
+            productImages: {},
         }
     }
 
@@ -17,13 +18,42 @@ export default class ProductPage extends Component {
                 if (res.data) {
                     this.setState({
                         product: res.data
-                    })
+                    }, () => {this.fetchProductImages(res.data)})
                 }
             })
     }
 
+    fetchProductImages = (product) => {
+        const images = product.images || []; // Ensure images is an array
+        if (images.length > 0) {
+            images.forEach(image => {
+                axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
+                    .then(res => {
+                        if (res.data) {
+                            if (res.data.errorMessage) {
+                                console.log(res.data.errorMessage);
+                            } else {
+                                // Update the productImages state with the fetched image
+                                this.setState(prevState => ({
+                                    productImages: {
+                                        ...prevState.productImages,
+                                        [image.filename]: `data:;base64,${res.data.image}`
+                                    }
+                                }));
+                            }
+                        } else {
+                            console.log("Image not found");
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error fetching image:", err);
+                    });
+            });
+        }
+    };
+
     render() {
-        const { product } = this.state
+        const { product, productImages } = this.state
         console.log(product)
 
         let specs = product.specifications || []
@@ -38,7 +68,11 @@ export default class ProductPage extends Component {
 
                     <div className="productImgBox boxes">
                         {(product.images || []).map((image, index) => (
-                            <img src={image} key={index} />
+                            <img
+                                src={productImages[image.filename]}
+                                key={index}
+                                alt={`Product image ${index + 1}`}
+                            />
                         ))}
                     </div>
 

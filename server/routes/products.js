@@ -1,4 +1,9 @@
 const router = require(`express`).Router()
+const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const JWT_PRIVATE_KEY = fs.readFileSync(process.env.JWT_PRIVATE_KEY_FILENAME, 'utf8')
+const multer  = require('multer')
+let upload = multer({dest: `${process.env.UPLOADED_FILES_FOLDER}`})
 
 const productsModel = require(`../models/products`)
 
@@ -9,6 +14,15 @@ router.get(`/products`, (req, res) => {
     })
 })
 
+router.get(`/products/photo/:filename`, (req, res) => {
+    fs.readFile(`${process.env.UPLOADED_FILES_FOLDER}/${req.params.filename}`, 'base64', (err, fileData) => {
+        if (fileData) {
+            res.json({ image: fileData });
+        } else {
+            res.json({ image: null });
+        }
+    });
+});
 
 // read one record
 router.get(`/products/:id`, (req, res) => {
@@ -32,55 +46,53 @@ router.get(`/brands`, (req, res) => {
 
 
 // add new product
-router.post(`/products/newProduct`, (req, res) => {
-    const {name, description, price, images, rating, category, subcategory, brand, stock, specifications} = req.body
-    if (!name || name.length < 3 || name.length > 100) {
-        res.json({errorMessage: `Product name must be between 3 & 100 in lenght`})
-    }
-    else if (!description || description.length < 10) {
-        res.json({errorMessage: `Product description must be at least 10 characters in lenght`})
-    }
-    else if (!price || price < 0) {
-        res.json({errorMessage: `Price cannot be a negative number`})
-    }
-    else if (!Array.isArray(images)) {
-        res.json({errorMessage: `Images must be an array and have a valid image url`})
-    }
-    else if (!rating !== undefined && (rating < 0 || rating > 5)) {
-        res.json({errorMessage: `Rating must be between 0 - 5`})
-    }
-    else if (!String) {
-        res.json({errorMessage: `Invalid category`})
-    }
-    else if (!String) {
-        res.json({errorMessage: `Invalid subcategory`})
-    }
-    else if (!brand || brand.trim() === "") {
-        res.json({errorMessage: `Brand is required and must be a string`})
-    }
-    else if (!stock || stock < 0) {
-        res.json({errorMessage: `Stock cannot be a negative number`})
-    }
-    else if (!Array.isArray(specifications) || !specifications.every(spec => spec.key && spec.value)) {
-        res.json({errorMessage: `specifications must be an array of keys and values`})
-    }
-    else {
-        productsModel.create(req.body, (error, data) => {
-            res.json(data)
-        })
-    }
+router.post(`/products/newProduct`, upload.array("images", parseInt(process.env.MAX_NUMBER_OF_UPLOAD_FILES_ALLOWED)), (req, res) => {
+    jwt.verify(req.headers.authorization, JWT_PRIVATE_KEY, {algorithm: "HS256"}, (err, decodeToken) => {
+        if (err) {
+            res.json({errorMessage: "User is not logged in"})
+        }
+        else {
+            if (decodeToken.accessLevel >= process.env.ACCESS_LEVEL_ADMIN) {
+                let productDetails = {
+                    name: req.body.name,
+                    description: req.body.description,
+                    price: req.body.price,
+                    rating: req.body.rating,
+                    category: req.body.category,
+                    subcategory: req.body.subcategory,
+                    brand: req.body.brand,
+                    stock: req.body.stock,
+                    images: req.files.map(file => ({ filename: file.filename })),
+                    specifications: req.body.specifications || [],
+                }
+
+                // console.log(productDetails)
+                productsModel.create(productDetails, (err, data) => {
+                    if (err) {
+                        console.log("Error adding product:", err)
+                        return res.json({ errorMessage: "Database error" })
+                    }
+                    res.json(data)
+                })
+            }
+        }
+    })
 })
 
 
+
 // edit product
-router.put(`/products/edit/:_id`, (req, res) => {
-    const updatedProduct = req.body
-    console.log(updatedProduct)
-    productsModel.findByIdAndUpdate(req.params._id, {$set: req.body}, (error, data) => {
-        if (error) {
-            res.json({error: "Error updating product"})
+router.put(`/products/edit/:id`, (req, res) => {
+    jwt.verify(req.headers.authorization, JWT_PRIVATE_KEY, {algorithm: "HS256"}, (err, decodeToken) => {
+        if (err) {
+            res.json({errorMessage: "user not logged in"})
         }
-        res.json(data)
+        else {
+            console.log(req.body) //https://stackoverflow.com/questions/57176075/findbyidandupdate-not-working-when-there-is-addition-of-records-in-collection
+            productsModel.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true}, (error, data) => {
+                res.json(data)
+            })
+        }
     })
 })
 

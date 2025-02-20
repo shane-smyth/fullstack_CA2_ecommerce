@@ -1,5 +1,10 @@
 const mongoose = require(`mongoose`)
 
+let productsPhotosSchema = new mongoose.Schema({
+    filename: {type: String}
+})
+
+
 // https://mongoosejs.com/docs/schematypes.html
 let productsSchema = new mongoose.Schema({
     name: {
@@ -21,9 +26,8 @@ let productsSchema = new mongoose.Schema({
         min: [0, "Price cannot be negative"],
     },
     images: {
-        type: [String],
+        type: [productsPhotosSchema],
         required: true,
-        match: [/^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/, "Invalid image URL"]//https://stackoverflow.com/questions/4098415/use-regex-to-get-image-url-in-html-js
     },
     rating: {
         type: Number,
@@ -32,13 +36,13 @@ let productsSchema = new mongoose.Schema({
         default: 0
     },
     category: {
-        type: String,
+        type: [String],
         ref: `categories`,
         required: [true, "category is required"],
 
     },
     subcategory: {
-        type: String,
+        type: [String],
         ref: `subcategories`,
         required: [true, "Subcategory is required"],
     },

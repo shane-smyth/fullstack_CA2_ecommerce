@@ -43,7 +43,7 @@ router.post(`/users/register`, (req, res) => {
                 // Save user with hashed password
                 usersModel.create({ username, email, password: hash }, (error, data) => {
                     if (data) {
-                        const token = jwt.sign({email: data.email, accessLevel:data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
+                        const token = jwt.sign({email: data.email, accessLevel:data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: "HS256", expiresIn:process.env.JWT_EXPIRY})
                         res.json({ username: data.username, accessLevel:data.accessLevel, token:token})
                     } else {
                         res.json({ errorMessage: "User was not registered" })

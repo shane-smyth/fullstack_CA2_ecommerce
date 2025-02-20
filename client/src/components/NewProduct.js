@@ -1,6 +1,5 @@
 import React, { Component } from "react"
 import axios from "axios"
-import { Link, Redirect } from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"
 
 
@@ -12,16 +11,20 @@ export default class NewProduct extends Component {
             name: "",
             description: "",
             price: 0,
-            images: [],
+            images: [], // to store the image files
+            imagePreviews: [], // to store a preview URL of the images
             rating: 0,
             categories: [],
             subcategories: [],
             brands: [],
-            selectedCategory: [],
-            selectedSubcategory: [],
+            selectedCategory: "",
+            selectedSubcategory: "",
             brand: "",
             stock: 0,
             specifications: [{key: "", value: ""}],
+            newCategory: "",
+            newSubcategory: "",
+            newBrand: ""
         }
     }
 
@@ -55,25 +58,35 @@ export default class NewProduct extends Component {
         this.setState({ [e.target.name]: e.target.value })
     }
 
-
     handleImageChange = (e) => {
         //https://www.js-craft.io/blog/using-url-createobjecturl-to-create-uploaded-image-previews-in-javascript/#:~:text=createObjectURL()%20method.,the%20URL%20is%20explicitly%20released.
-        const urls = Array.from(e.target.files).map(file => window.URL.createObjectURL(file))
-        this.setState(prevState => ({images: [...prevState.images, ...urls]}))
+        const files = Array.from(e.target.files)
+        const previews = files.map(file => URL.createObjectURL(file))
+        this.setState((prevState) => ({
+            images: [...prevState.images, ...files],
+            imagePreviews: [...(prevState.imagePreviews || []), ...previews],
+        }))
     }
     removeImage = (index) => {
         this.setState(prevState => ({
-            images: prevState.images.filter((_, i) => i !== index)
+            images: prevState.images.filter((_, i) => i !== index),
+            imagePreviews: (prevState.imagePreviews || []).filter((_, i) => i !== index),
         }))
     }
 
     handleCategoryChange = (e) => {
         this.setState({ selectedCategory: e.target.value })
-        console.log(this.state.selectedCategory)
-    }
 
+        if (e.target.value !== "new") {
+            this.setState({ newCategory: "" })
+        }
+    }
     handleSubcategoryChange = (e) => {
         this.setState({ selectedSubcategory: e.target.value })
+
+        if (e.target.value !== "new") {
+            this.setState({ newSubcategory: "" })
+        }
     }
 
     handleBrandChange = (e) => {
@@ -86,13 +99,11 @@ export default class NewProduct extends Component {
         specifications[index][name] = value
         this.setState({ specifications })
     }
-
     addSpecification = () => {
         this.setState((prevState) => ({
             specifications: [...prevState.specifications, {key: "", value: ""}],
         }))
     }
-
     removeSpecification = (index) => {
         this.setState((prevState) => ({
             specifications: prevState.specifications.filter((_, i) => i !== index),
@@ -102,37 +113,51 @@ export default class NewProduct extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
 
-        const productObj = {
-            name : this.state.name,
-            description : this.state.description,
-            price : this.state.price,
-            images : this.state.images,
-            rating: this.state.rating,
-            category: this.state.selectedCategory,
-            subcategory: this.state.selectedSubcategory,
-            brand : this.state.brand,
-            stock : this.state.stock,
-            specifications : this.state.specifications,
-        }
+        const finalBrand = this.state.brand === "new" ? this.state.brandInput : this.state.brand;
+        const finalCategory = this.state.selectedCategory === "new" ? this.state.newCategory : this.state.selectedCategory
+        const finalSubcategory = this.state.selectedSubcategory === "new" ? this.state.newSubcategory : this.state.selectedSubcategory
+        let formData = new FormData()
 
-        axios.post(`${SERVER_HOST}/products/newProduct`, productObj)
+        formData.append("name", this.state.name)
+        formData.append("description", this.state.description)
+        formData.append("price", this.state.price)
+        this.state.images.forEach((image) => {
+            formData.append("images", image)
+        })
+        formData.append("rating", this.state.rating)
+        formData.append("category", finalCategory)
+        formData.append("subcategory", finalSubcategory)
+        formData.append("brand", finalBrand)
+        formData.append("stock", this.state.stock)
+
+        this.state.specifications.forEach((spec, index) => {
+            formData.append(`specifications[${index}][key]`, spec.key)
+            formData.append(`specifications[${index}][value]`, spec.value)
+        })
+
+        axios.post(`${SERVER_HOST}/products/newProduct`, formData, {
+            headers: {
+                "authorization": localStorage.token,
+                "Content-Type": "multipart/form-data"
+            }
+        })
             .then(res => {
-                if (res.data) {
+                if(res.data) {
                     if (res.data.errorMessage) {
                         console.log(res.data.errorMessage)
+                    } else {
+                        console.log("Record added")
+                        this.setState({redirectToDisplayAllCars:true})
                     }
-                    else {
-                        console.log(`Product Added`)
-                    }
-                }
-                else {
-                    console.log(`Adding Product Failed`)
+                } else {
+                    console.log("Record not added")
                 }
             })
     }
 
     render() {
         const { onClose } = this.props
+        const { imagePreviews } = this.state
 
         return (
             <div className="modalOverlay">
@@ -179,7 +204,7 @@ export default class NewProduct extends Component {
                         <div className="labelInput">
                             <div className="imageInputContainer">
                                 <div className="imagePreview">
-                                    {this.state.images.map((image, index) => (
+                                    {imagePreviews.map((image, index) => (
                                         <div key={index} className="imageContainer">
                                             <button className="removeImageButton" onClick={() => this.removeImage(index)}>&#x2715;</button>
                                             <img src={image} alt="Product" className="previewImage"/>
@@ -210,8 +235,8 @@ export default class NewProduct extends Component {
 
                         <div className="labelInput">
                             <label>Category:</label>
-                            <select onChange={this.handleCategoryChange}>
-                                <option value="none" disabled selected hidden>Select Category</option>
+                            <select onChange={this.handleCategoryChange} value={this.state.selectedCategory}>
+                                <option value="" disabled hidden>Select Category</option>
                                 {this.state.categories.map((category) => (
                                     <option key={category} value={category}>{category}</option>
                                 ))}
@@ -220,16 +245,18 @@ export default class NewProduct extends Component {
                             {this.state.selectedCategory === "new" && (
                                 <input
                                     type="text"
+                                    name="newCategory"
                                     placeholder="Enter New Category"
-                                    onChange={this.handleChange}
+                                    value={this.state.newCategory}
+                                    onChange={(e) => this.setState({ newCategory: e.target.value })}
                                 />
                             )}
                         </div>
 
                         <div className="labelInput">
                             <label>Subcategory:</label>
-                            <select onChange={this.handleSubcategoryChange}>
-                                <option value="none" disabled selected hidden>Select Subcategory</option>
+                            <select onChange={this.handleSubcategoryChange} value={this.state.selectedSubcategory}>
+                                <option value="" disabled hidden>Select Subcategory</option>
                                 {this.state.subcategories.map((subcategory) => (
                                     <option key={subcategory} value={subcategory}>{subcategory}</option>
                                 ))}
@@ -238,16 +265,19 @@ export default class NewProduct extends Component {
                             {this.state.selectedSubcategory === "new" && (
                                 <input
                                     type="text"
+                                    name="newSubcategory"
                                     placeholder="Enter New Subcategory"
-                                    onChange={this.handleChange}
+                                    value={this.state.newSubcategory}
+                                    onChange={(e) => this.setState({ newSubcategory: e.target.value })}
                                 />
                             )}
                         </div>
 
+
                         <div className="labelInput">
                             <label>Brand:</label>
-                            <select onChange={this.handleBrandChange}>
-                                <option value="none" disabled selected hidden>Select Brand</option>
+                            <select onChange={this.handleBrandChange} value={this.state.brand}>
+                                <option value="" disabled hidden>Select Brand</option>
                                 {this.state.brands.map((brand) => (
                                     <option key={brand} value={brand}>{brand}</option>
                                 ))}
@@ -256,11 +286,14 @@ export default class NewProduct extends Component {
                             {this.state.brand === "new" && (
                                 <input
                                     type="text"
+                                    name="brandInput"
                                     placeholder="Enter New Brand"
-                                    onChange={this.handleChange}
+                                    value={this.state.brandInput || ""}
+                                    onChange={(e) => this.setState({ brandInput: e.target.value })}
                                 />
                             )}
                         </div>
+
 
                         <div className="labelInput">
                             <label>Stock:</label>

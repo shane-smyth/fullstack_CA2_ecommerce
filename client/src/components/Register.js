@@ -66,6 +66,7 @@ export default class Register extends Component {
                         localStorage.name = res.data.name
                         localStorage.accessLevel = res.data.accessLevel
                         localStorage.token = res.data.token
+                        localStorage.pfp = res.data.pfp
 
                         this.setState({isRegistered: true})
                     }

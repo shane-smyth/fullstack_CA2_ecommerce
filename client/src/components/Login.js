@@ -48,6 +48,7 @@ export default class Login extends Component
                         localStorage.name = res.data.name
                         localStorage.accessLevel = res.data.accessLevel
                         localStorage.token = res.data.token
+                        localStorage.pfp = res.data.pfp
 
                         this.setState({isLoggedIn:true})
                         window.location.reload(true) //https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react

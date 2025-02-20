@@ -1,10 +1,14 @@
 import React, {Component} from "react"
 import Logout from "./Logout"
-
+import axios from "axios"
+import {SERVER_HOST} from "../config/global_constants"
 
 export default class Account extends Component {
     constructor(props) {
         super(props)
+        this.state = {
+            user: null,
+        }
     }
 
     render() {

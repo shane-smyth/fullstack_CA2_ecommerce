@@ -101,8 +101,10 @@ export default class EditProduct extends Component {
             stock: this.state.stock,
             specifications: this.state.specifications,
         }
-        console.log("Updated Product:", updatedProduct); // Log the payload
-        axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, updatedProduct)
+        console.log("Updated Product:", updatedProduct)
+        axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, updatedProduct, {
+            headers: {"authorization":localStorage.token}
+        })
             .then(res => {
                 if (res.data) {
                     console.log("Product updated successfully")

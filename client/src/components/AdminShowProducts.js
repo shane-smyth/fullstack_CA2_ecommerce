@@ -16,6 +16,7 @@ export default class AdminShowProducts extends Component {
             addProduct: false,
             editProduct: false,
             selectedProduct: null,
+            productImages: {},
         }
     }
 
@@ -26,7 +27,7 @@ export default class AdminShowProducts extends Component {
                     this.setState({
                         products: res.data,
                         selectedProducts: res.data,
-                    })
+                    }, () => {this.fetchProductImages(res.data)})
                 }
                 else {
                     console.log("Records not found")
@@ -34,6 +35,32 @@ export default class AdminShowProducts extends Component {
             })
     }
 
+    fetchProductImages = (products) => {
+        products.forEach(product => {
+            if (product.images && product.images.length > 0) {
+                product.images.forEach(image => {
+                    axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
+                        .then(res => {
+                            if (res.data) {
+                                if (res.data.errorMessage) {
+                                    console.log(res.data.errorMessage)
+                                } else {
+                                    // Update the productImages state with the fetched image
+                                    this.setState(prevState => ({
+                                        productImages: {
+                                            ...prevState.productImages,
+                                            [image.filename]: `data:;base64,${res.data.image}`
+                                        }
+                                    }))
+                                }
+                            } else {
+                                console.log("Image not found")
+                            }
+                        })
+                })
+            }
+        })
+    }
 
     confirmDelete = (productId) => {
         if (window.confirm("Are you sure?")) {
@@ -112,7 +139,7 @@ export default class AdminShowProducts extends Component {
 
 
     render() {
-        const { selectedProducts, addProduct, editProduct } = this.state
+        const { selectedProducts, addProduct, editProduct, productImages  } = this.state
 
         return (
             <div className="adminProdCardBox">
@@ -136,9 +163,11 @@ export default class AdminShowProducts extends Component {
                 <br/>
                 <br/>
                 {selectedProducts.map((product, index) => (
-                    <div className="cardBody" key={index} onClick={() => this.openEditModal(product)}>
+                    <div className="cardBody" key={index}>
                         <div className="adminProdCardImg">
-                            <img src={product.images[0]} alt={product.name} />
+                            {product.images && product.images.length > 0 && (
+                                <img src={productImages[product.images[0].filename]} alt={product.name}/>
+                            )}
                         </div>
 
                         <div className="adminProdDetails">
@@ -148,7 +177,7 @@ export default class AdminShowProducts extends Component {
                         </div>
 
                         <div className="userEdits">
-                            {/*<button className="greenButton">Edit</button>*/}
+                            <button onClick={() => this.openEditModal(product)} className="greenButton">Edit</button>
                             <button onClick={() => this.confirmDelete(product._id)} className="redButton">Delete</button>
                         </div>
                     </div>
