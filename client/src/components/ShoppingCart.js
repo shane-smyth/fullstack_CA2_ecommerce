@@ -14,71 +14,36 @@ export default class ShoppingCart extends Component {
     }
 
     componentDidMount() {
-        const cartItemsString = sessionStorage.getItem("cartItems")
-        const cartItems = cartItemsString ? this.stringToCart(cartItemsString) : [] 
-
         const { product, quantity } = this.props.location.state || {}
 
         if (product) {
-            const existingProductIndex = cartItems.findIndex((item) => item.productId === product.productId) 
-
-            if (existingProductIndex === -1) {
-                cartItems.push({ ...product, quantity }) 
-                console.log("added to cart") 
-            }
-
-            sessionStorage.setItem("cartItems", this.cartToString(cartItems))
+            this.setState((prevState) => ({
+                cartItems: [...prevState.cartItems , {
+                    ...product, quantity
+                }],
+            }))
         }
-
-        this.setState({
-            cartItems
-        }) 
-    }
-
-    cartToString = (cartItems) => {
-        return cartItems
-            .map((item) =>
-                    `${item.productId},${item.name},${item.price},${item.stock},${item.quantity},${item.images[0]},${item.subcategory}`
-            ).join(" ") 
-    } 
-
-    stringToCart = (cartItemsString) => {
-        return cartItemsString.split(" ").map((itemString) => {
-            const [productId, name, price, stock, quantity, image, subcategory] = itemString.split(",") 
-            return {
-                productId,
-                name,
-                price: parseFloat(price),
-                stock: parseInt(stock),
-                quantity: parseInt(quantity),
-                images: [image],
-                subcategory,
-            } 
-        }) 
     }
 
     handleUpdateQuantity = (productId, newQty) => {
-        const { cartItems } = this.state 
-        const product = cartItems.find((product) => product.productId === productId) 
+        const { cartItems } = this.state
+        const product = cartItems.find((product) => product.productId === productId)
 
         if (newQty > product.stock) {
             this.setState({
                 showQuantityLimitModal: true,
                 productWithLimit: product,
-            }) 
-            return 
+            })
+            return
         }
 
         this.setState((prevState) => {
-            const updatedItems = prevState.cartItems.map((product) =>
+            const updatedItems = prevState.cartItems.map(product =>
                 product.productId === productId ? { ...product, quantity: newQty } : product
-            ) 
-
-            sessionStorage.setItem("cartItems", this.cartToString(updatedItems))
-
-            return { cartItems: updatedItems } 
-        }) 
-    } 
+            )
+            return { cartItems: updatedItems }
+        })
+    }
 
     closeQuantityLimitModal = () => {
         this.setState({
@@ -88,14 +53,11 @@ export default class ShoppingCart extends Component {
     }
 
     handleRemoveItem = (productId) => {
-        this.setState((prevState) => {
-            const updatedItems = prevState.cartItems.filter((product) => product.productId !== productId) 
-
-            sessionStorage.setItem("cartItems", this.cartToString(updatedItems))
-
-            return { cartItems: updatedItems } 
-        }) 
-    } 
+        this.setState((prevState) => ({
+                cartItems: prevState.cartItems.filter(product => product.productId !== productId),
+            })
+        )
+    }
 
     openRemoveConfirmModal = (productID) => {
         const productToRemove = this.state.cartItems.find((product) => product.productId === productID)

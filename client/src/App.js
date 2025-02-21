@@ -34,7 +34,6 @@ export default class App extends Component {
                     <Route exact path="/productPage/:id" component={ProductPage} />
                     <Route exact path="/cart" component={ShoppingCart} />
                     <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>} />
-
                 </Switch>
 
                 <footer>

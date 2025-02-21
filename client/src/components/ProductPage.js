@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import axios from "axios"
-import {Link, Redirect} from "react-router-dom"
+// import {Link, Redirect} from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"  
 
 export default class ProductPage extends Component {
@@ -128,9 +128,9 @@ export default class ProductPage extends Component {
                     // console.log("out of stock modal"),
                     <div id="outOfStockModal" className="modal active">
                         <div className="modal-content">
-                            <span className="close" onClick={this.closeOutOfStockModal}>
-                                &times;
-                            </span>
+                            {/*<span className="close" onClick={this.closeOutOfStockModal}>*/}
+                            {/*    &times;*/}
+                            {/*</span>*/}
                             <h2>Out of Stock</h2>
                             <p>Sorry ! This product is currently out of stock and cannot be added to your cart</p>
                             <button onClick={this.closeOutOfStockModal}>OK</button>
