@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import {Link} from "react-router-dom"
+// import BuyProduct from "./BuyProduct"
 
 
 export default class ProductCard extends Component {
@@ -38,6 +39,7 @@ export default class ProductCard extends Component {
                                 {product.stock <= 0 ? <p style={{color: "red"}}>out of stock</p> :
                                     <p style={{color: "#28b845"}}>in stock</p>}
                             </div>
+                                {/*<BuyProduct productId={product.productId} price={product.price} />*/}
                         </div>
                     </Link>
                 ))}

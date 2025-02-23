@@ -34,6 +34,7 @@ export default class Shop extends Component {
     }
 
     render() {
+
         let { products } = this.state
 
         const { location } = this.props

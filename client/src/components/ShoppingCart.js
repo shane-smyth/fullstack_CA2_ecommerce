@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import BuyProduct from "./BuyProduct"
 
 export default class ShoppingCart extends Component {
     constructor(props) {
@@ -13,17 +14,40 @@ export default class ShoppingCart extends Component {
         }
     }
 
+    // componentDidMount() {
+    //     const { product, quantity } = this.props.location.state || {}
+    //
+    //     if (product) {
+    //         this.setState((prevState) => ({
+    //             cartItems: [...prevState.cartItems , {
+    //                 ...product, quantity
+    //             }],
+    //         }))
+    //     }
+    // }
+
     componentDidMount() {
+        const storedCart = localStorage.getItem("cartItems") 
+        const cartItems = storedCart ? JSON.parse(storedCart) : [] 
+
         const { product, quantity } = this.props.location.state || {}
 
         if (product) {
-            this.setState((prevState) => ({
-                cartItems: [...prevState.cartItems , {
-                    ...product, quantity
-                }],
-            }))
+            const existingProductIndex = cartItems.findIndex((item) => item.productId === product.productId) 
+
+            if (existingProductIndex === -1) {
+                cartItems.push({ ...product, quantity }) 
+            }
+
+            localStorage.setItem("cartItems", JSON.stringify(cartItems)) 
         }
+
+        this.setState({ cartItems }) 
     }
+
+    updateCartStorage = (cartItems) => {
+        localStorage.setItem("cartItems", JSON.stringify(cartItems)) 
+    } 
 
     handleUpdateQuantity = (productId, newQty) => {
         const { cartItems } = this.state
@@ -41,6 +65,7 @@ export default class ShoppingCart extends Component {
             const updatedItems = prevState.cartItems.map(product =>
                 product.productId === productId ? { ...product, quantity: newQty } : product
             )
+            this.updateCartStorage(updatedItems)
             return { cartItems: updatedItems }
         })
     }
@@ -52,12 +77,19 @@ export default class ShoppingCart extends Component {
         })
     }
 
+    // handleRemoveItem = (productId) => {
+    //     this.setState((prevState) => ({
+    //             cartItems: prevState.cartItems.filter(product => product.productId !== productId),
+    //         })
+    //     )
+    // }
     handleRemoveItem = (productId) => {
-        this.setState((prevState) => ({
-                cartItems: prevState.cartItems.filter(product => product.productId !== productId),
-            })
-        )
-    }
+        this.setState((prevState) => {
+            const updatedItems = prevState.cartItems.filter((product) => product.productId !== productId) 
+            this.updateCartStorage(updatedItems) 
+            return { cartItems: updatedItems } 
+        }) 
+    } 
 
     openRemoveConfirmModal = (productID) => {
         const productToRemove = this.state.cartItems.find((product) => product.productId === productID)
@@ -89,14 +121,14 @@ export default class ShoppingCart extends Component {
     render() {
         const { cartItems, showQuantityLimitModal, productWithLimit,  showRemoveConfirmModal, productToRemove } = this.state
         const isCartEmpty = cartItems.length === 0
+        const totalPrice = cartItems.reduce((sum, product) => sum + product.price * product.quantity, 0).toFixed(2)
 
         return (
             <div className="cartPageContainer">
                 <h2>Shopping Cart</h2>
                 {isCartEmpty ?
-                    <p className="emptyCartMessage" >
-                        Your shopping cart is empty.
-                    </p>:
+                    <p className="emptyCartMessage">Your shopping cart is empty.</p>
+                    :
                     <>
                         <table className="cartTable">
                             <thead>
@@ -153,22 +185,18 @@ export default class ShoppingCart extends Component {
                         </table>
 
                         <div className="cartTotalContainer">
-                            <p>
-                                <strong>Total: </strong>
-                                €{cartItems
-                                .reduce((sum, product) => sum + product.price * product.quantity, 0)
-                                .toFixed(2)}
-                            </p>
+                            <p><strong>Total: </strong>€{totalPrice}</p>
                         </div>
 
-                        <button
-                            type="button"
-                            id="checkoutButton"
-                            disabled={isCartEmpty}
-                            onClick={this.handleCheckout}
-                        >
-                            CHECKOUT
-                        </button>
+                        {/*<button*/}
+                        {/*    type="button"*/}
+                        {/*    id="checkoutButton"*/}
+                        {/*    disabled={isCartEmpty}*/}
+                        {/*    onClick={this.handleCheckout}*/}
+                        {/*>*/}
+                        {/*    CHECKOUT*/}
+                        {/*</button>*/}
+                        <BuyProduct totalPrice={totalPrice} />
                     </>
                 }
 
@@ -176,7 +204,7 @@ export default class ShoppingCart extends Component {
                     <div id="quantityLimitModal" className="modal active">
                         <div className="modal-content">
                             {/*<span className="close" onClick={this.closeQuantityLimitModal}>*/}
-                            {/*    &times*/}
+                            {/*    &times;*/}
                             {/*</span>*/}
                             <h2>Stock Limited</h2>
                             <p>

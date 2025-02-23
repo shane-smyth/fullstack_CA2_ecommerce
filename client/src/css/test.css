@@ -184,4 +184,25 @@
   height: 50px;
   margin-right: 10px; }
 
+.paypal-button-container {
+  transition: all 0.3s ease-in-out;
+  height: 100%;
+  width: 64%;
+  margin: auto; }
+
+.payPalMessage {
+  width: 650px;
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  border: thin solid #666666;
+  border-radius: 50px;
+  padding: 50px; }
+
+#payPalPaymentIDButton {
+  margin-top: 50px; }
+
+#payPalPaymentID {
+  font-weight: bold; }
+
 /*# sourceMappingURL=test.css.map */

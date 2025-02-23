@@ -99,6 +99,7 @@ export default class FilterProducts extends Component {
             return matchesBrand && matchesPrice && matchesStock && matchesRating && matchesCategory
         })
         this.setState({filteredProducts}, this.sortProducts)
+
     }
 
     handleSortChange = (e) => {

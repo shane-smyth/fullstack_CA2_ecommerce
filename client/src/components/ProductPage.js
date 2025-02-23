@@ -1,7 +1,8 @@
 import React, { Component } from "react"
 import axios from "axios"
 // import {Link, Redirect} from "react-router-dom"
-import { SERVER_HOST } from "../config/global_constants"  
+import { SERVER_HOST } from "../config/global_constants"
+import BuyProduct from "./BuyProduct";
 
 export default class ProductPage extends Component {
 
@@ -109,6 +110,7 @@ export default class ProductPage extends Component {
                                     <p>ADD TO BAG</p>
                             </button>
                         </div>
+                        <br/><BuyProduct productId={product.productId} price={product.price} />
                     </div>
 
                     <div className="productSpecsBox boxes">

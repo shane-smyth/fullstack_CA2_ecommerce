@@ -15,7 +15,8 @@ import Shop from "./components/Shop.js"
 import NavBar from "./components/NavBar.js"
 import ProductPage from "./components/ProductPage"
 import ShoppingCart from "./components/ShoppingCart"
-
+import BuyProduct from "./components/BuyProduct"
+import PayPalMessage from "./components/PayPalMessage"
 
 export default class App extends Component {
     render() {
@@ -29,10 +30,10 @@ export default class App extends Component {
                     <Route exact path="/" component={Home} />
                     <Route exaxt path="/home" component={Home} />
                     <Route exact path="/shop" component={Shop} />
-                    {/*<Route exact path="/shop/:category/:brand" component={Shop} />*/}
-                    {/*<Route path="/shop/:category?/:brand?" component={Shop} />*/}
                     <Route exact path="/productPage/:id" component={ProductPage} />
                     <Route exact path="/cart" component={ShoppingCart} />
+                    <Route exact path="/BuyProduct/:id" component={BuyProduct} />
+                    <Route exact path="/PayPalMessage/:messageType/:payPalPaymentID?" component={PayPalMessage}/>
                     <Route path="*" component={() => <h3>Invalid URL. Webpage does not exist</h3>} />
                 </Switch>
 
