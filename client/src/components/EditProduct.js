@@ -7,19 +7,21 @@ export default class EditProduct extends Component {
         super(props)
 
         this.state = {
+            product: props.product || [],
             name: props.product.name,
             description: props.product.description,
             price: props.product.price,
-            images: props.product.images || [],
+            images: props.product.images,
+            productImages: [],
             rating: props.product.rating,
-            categories: [],
-            subcategories: [],
-            brands: [],
             selectedCategory: props.product.category,
             selectedSubcategory: props.product.subcategory,
             brand: props.product.brand,
             stock: props.product.stock,
             specifications: props.product.specifications || [{key: "", value: ""}],
+            categories: [],
+            subcategories: [],
+            brands: [],
         }
     }
 
@@ -34,11 +36,40 @@ export default class EditProduct extends Component {
                     const categories = [...new Set(products.flatMap(product => product.category))]
                     const subcategories = [...new Set(products.flatMap(product => product.subcategory))]
 
-                    this.setState({categories, subcategories, brands})
+                    this.setState({
+                        categories: categories,
+                        subcategories: subcategories,
+                        brands: brands,
+                    }, () => this.fetchProductImages())
                 } else {
                     console.log("Records not found.")
                 }
             })
+    }
+
+    fetchProductImages = () => {
+        const images = this.state.product.images || [] // Ensure images is an array
+        if (images.length > 0) {
+            images.forEach(image => {
+                axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
+                    .then(res => {
+                        if (res.data) {
+                            if (res.data.errorMessage) {
+                                console.log(res.data.errorMessage)
+                            } else {
+                                this.setState(prevState => ({
+                                    productImages: [...prevState.productImages, `data:;base64,${res.data.image}`]
+                                }))
+                            }
+                        } else {
+                            console.log("Image not found")
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error fetching image:", err)
+                    })
+            })
+        }
     }
 
     handleChange = (e) => {
@@ -47,13 +78,23 @@ export default class EditProduct extends Component {
 
 
     handleImageChange = (e) => {
-        const urls = Array.from(e.target.files).map(file => window.URL.createObjectURL(file))
-        this.setState(prevState => ({images: [...prevState.images, ...urls]}))
+        const files = Array.from(e.target.files)
+        const previews = files.map(file => URL.createObjectURL(file))
+        this.setState((prevState) => ({
+            productImages: [...prevState.productImages, ...files],
+            imagePreviews: [...(prevState.imagePreviews || []), ...previews],
+        }))
     }
     removeImage = (index) => {
-        this.setState(prevState => ({
-            images: prevState.images.filter((_, i) => i !== index)
-        }))
+        this.setState((prevState) => {
+            const updatedProductImages = prevState.productImages.filter((_, i) => i !== index)
+            const updatedPreviews = prevState.imagePreviews ? prevState.imagePreviews.filter((_, i) => i !== index) : []
+
+            return {
+                productImages: updatedProductImages,
+                imagePreviews: updatedPreviews,
+            }
+        })
     }
 
 
@@ -89,21 +130,34 @@ export default class EditProduct extends Component {
     handleSubmit = (e) => {
         e.preventDefault()
 
-        const updatedProduct = {
-            name: this.state.name,
-            description: this.state.description,
-            price: this.state.price,
-            images: this.state.images,
-            rating: this.state.rating,
-            category: this.state.selectedCategory,
-            subcategory: this.state.selectedSubcategory,
-            brand: this.state.brand,
-            stock: this.state.stock,
-            specifications: this.state.specifications,
-        }
-        console.log("Updated Product:", updatedProduct)
-        axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, updatedProduct, {
-            headers: {"authorization":localStorage.token}
+        let formData = new FormData()
+        formData.append("name", this.state.name)
+        formData.append("description", this.state.description)
+        formData.append("price", this.state.price)
+        this.state.productImages.forEach((image, index) => {
+            if (typeof image === "string") {
+                formData.append(`images[${index}]`, image)
+            } else {
+                formData.append("images", image)
+            }
+        })
+        formData.append("rating", this.state.rating)
+        formData.append("category", this.state.selectedCategory)
+        formData.append("subcategory", this.state.selectedSubcategory)
+        formData.append("brand", this.state.brand)
+        formData.append("stock", this.state.stock)
+        this.state.specifications.forEach((spec, index) => {
+            formData.append(`specifications[${index}][key]`, spec.key)
+            formData.append(`specifications[${index}][value]`, spec.value)
+        })
+
+        console.log("Updated Product:", formData)
+
+        axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, formData, {
+            headers: {
+                "authorization": localStorage.token,
+                "Content-Type": "multipart/form-data"
+            }
         })
             .then(res => {
                 if (res.data) {
@@ -116,7 +170,9 @@ export default class EditProduct extends Component {
     }
 
     render() {
-        const {onClose} = this.props
+        const { onClose } = this.props
+        const { productImages } = this.state
+
         return (
             <div className="modalOverlay">
                 <div className="modalContent">
@@ -161,10 +217,13 @@ export default class EditProduct extends Component {
                         <div className="labelInput">
                             <div className="imageInputContainer">
                                 <div className="imagePreview">
-                                    {this.state.images.map((image, index) => (
+                                    {Array.isArray(productImages) && productImages.map((image, index) => (
                                         <div key={index} className="imageContainer">
                                             <button className="removeImageButton" onClick={() => this.removeImage(index)}>&#x2715;</button>
-                                            <img src={image} alt="Product" className="previewImage"/>
+                                            <img
+                                                src={typeof image === "string" ? image : URL.createObjectURL(image)}
+                                                alt="Product"
+                                                className="previewImage"/>
                                         </div>
                                     ))}
                                 </div>

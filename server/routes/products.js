@@ -17,12 +17,12 @@ router.get(`/products`, (req, res) => {
 router.get(`/products/photo/:filename`, (req, res) => {
     fs.readFile(`${process.env.UPLOADED_FILES_FOLDER}/${req.params.filename}`, 'base64', (err, fileData) => {
         if (fileData) {
-            res.json({ image: fileData });
+            res.json({ image: fileData })
         } else {
-            res.json({ image: null });
+            res.json({ image: null })
         }
-    });
-});
+    })
+})
 
 // read one record
 router.get(`/products/:id`, (req, res) => {
@@ -82,16 +82,41 @@ router.post(`/products/newProduct`, upload.array("images", parseInt(process.env.
 
 
 // edit product
-router.put(`/products/edit/:id`, (req, res) => {
+router.put(`/products/edit/:id`, upload.array("images", parseInt(process.env.MAX_NUMBER_OF_UPLOAD_FILES_ALLOWED)), (req, res) => {
     jwt.verify(req.headers.authorization, JWT_PRIVATE_KEY, {algorithm: "HS256"}, (err, decodeToken) => {
         if (err) {
             res.json({errorMessage: "user not logged in"})
         }
         else {
-            console.log(req.body) //https://stackoverflow.com/questions/57176075/findbyidandupdate-not-working-when-there-is-addition-of-records-in-collection
-            productsModel.findOneAndUpdate({_id: req.params.id}, {$set: req.body}, {new: true}, (error, data) => {
-                res.json(data)
-            })
+            if (decodeToken.accessLevel >= process.env.ACCESS_LEVEL_ADMIN) {
+                productsModel.findById(req.params.id, (error, existingProduct) => {
+                    if (error) {
+                        res.json({errorMessage: "Product not found"})
+                    }
+
+                    let updatedImages = [...existingProduct.images]
+                    if (req.files.length > 0) {
+                        updatedImages = [...updatedImages, ...req.files.map(file => ({ filename: file.filename }))]
+                    }
+
+                    let productDetails = {
+                        name: req.body.name,
+                        description: req.body.description,
+                        price: req.body.price,
+                        rating: req.body.rating,
+                        category: req.body.category,
+                        subcategory: req.body.subcategory,
+                        brand: req.body.brand,
+                        stock: req.body.stock,
+                        images: updatedImages,
+                        specifications: req.body.specifications || [],
+                    }
+                    console.log(productDetails) //https://stackoverflow.com/questions/57176075/findbyidandupdate-not-working-when-there-is-addition-of-records-in-collection
+                    productsModel.findOneAndUpdate({_id: req.params.id}, productDetails, {new: true}, (error, data) => {
+                        res.json(data)
+                    })
+                })
+            }
         }
     })
 })

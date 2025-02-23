@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import axios from "axios"
 import {Link, Redirect} from "react-router-dom"
-import { SERVER_HOST } from "../config/global_constants";
+import { SERVER_HOST } from "../config/global_constants"
 
 export default class ProductPage extends Component {
     constructor(props) {
@@ -24,14 +24,14 @@ export default class ProductPage extends Component {
     }
 
     fetchProductImages = (product) => {
-        const images = product.images || []; // Ensure images is an array
+        const images = product.images || [] // Ensure images is an array
         if (images.length > 0) {
             images.forEach(image => {
                 axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
                     .then(res => {
                         if (res.data) {
                             if (res.data.errorMessage) {
-                                console.log(res.data.errorMessage);
+                                console.log(res.data.errorMessage)
                             } else {
                                 // Update the productImages state with the fetched image
                                 this.setState(prevState => ({
@@ -39,22 +39,22 @@ export default class ProductPage extends Component {
                                         ...prevState.productImages,
                                         [image.filename]: `data:;base64,${res.data.image}`
                                     }
-                                }));
+                                }))
                             }
                         } else {
-                            console.log("Image not found");
+                            console.log("Image not found")
                         }
                     })
                     .catch(err => {
-                        console.error("Error fetching image:", err);
-                    });
-            });
+                        console.error("Error fetching image:", err)
+                    })
+            })
         }
-    };
+    }
 
     render() {
         const { product, productImages } = this.state
-        console.log(product)
+        // console.log(product)
 
         let specs = product.specifications || []
 
