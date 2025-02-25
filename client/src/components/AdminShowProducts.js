@@ -68,7 +68,8 @@ export default class AdminShowProducts extends Component {
         }
     }
     handleDelete = (id) => {
-        axios.delete(`${SERVER_HOST}/products/delete/${id}`)
+        console.log(localStorage)
+        axios.delete(`${SERVER_HOST}/products/delete/${id}`,{headers: {"authorization": localStorage.token}}, {})
             .then(res => {
                 if (res.data) {
                     if (res.data.error) {
@@ -139,7 +140,7 @@ export default class AdminShowProducts extends Component {
 
 
     render() {
-        const { selectedProducts, addProduct, editProduct, productImages  } = this.state
+        const { selectedProducts, addProduct, editProduct, productImages} = this.state
 
         return (
             <div className="adminProdCardBox">

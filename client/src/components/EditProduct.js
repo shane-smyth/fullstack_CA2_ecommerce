@@ -13,6 +13,8 @@ export default class EditProduct extends Component {
             price: props.product.price,
             images: props.product.images,
             productImages: [],
+            imagesPreviews: [],
+            removedImages: [],
             rating: props.product.rating,
             selectedCategory: props.product.category,
             selectedSubcategory: props.product.subcategory,
@@ -48,7 +50,7 @@ export default class EditProduct extends Component {
     }
 
     fetchProductImages = () => {
-        const images = this.state.product.images || [] // Ensure images is an array
+        const images = this.state.images
         if (images.length > 0) {
             images.forEach(image => {
                 axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
@@ -87,15 +89,23 @@ export default class EditProduct extends Component {
     }
     removeImage = (index) => {
         this.setState((prevState) => {
-            const updatedProductImages = prevState.productImages.filter((_, i) => i !== index)
-            const updatedPreviews = prevState.imagePreviews ? prevState.imagePreviews.filter((_, i) => i !== index) : []
+            const updatedProductImages = [...prevState.productImages]
+            const removedImage = updatedProductImages[index]
+
+            let updatedRemovedImages = [...prevState.removedImages]
+            if (typeof removedImage === "string") {
+                updatedRemovedImages.push(prevState.images[index].filename)
+            }
+
+            updatedProductImages.splice(index, 1)
 
             return {
                 productImages: updatedProductImages,
-                imagePreviews: updatedPreviews,
+                removedImages: updatedRemovedImages,
             }
         })
     }
+
 
 
     handleCategoryChange = (e) => {
@@ -128,46 +138,48 @@ export default class EditProduct extends Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         let formData = new FormData()
         formData.append("name", this.state.name)
         formData.append("description", this.state.description)
         formData.append("price", this.state.price)
-        this.state.productImages.forEach((image, index) => {
-            if (typeof image === "string") {
-                formData.append(`images[${index}]`, image)
-            } else {
+
+        this.state.productImages.forEach((image) => {
+            if (image instanceof File) {
                 formData.append("images", image)
             }
         })
+
         formData.append("rating", this.state.rating)
         formData.append("category", this.state.selectedCategory)
         formData.append("subcategory", this.state.selectedSubcategory)
         formData.append("brand", this.state.brand)
         formData.append("stock", this.state.stock)
+
         this.state.specifications.forEach((spec, index) => {
             formData.append(`specifications[${index}][key]`, spec.key)
             formData.append(`specifications[${index}][value]`, spec.value)
         })
 
-        console.log("Updated Product:", formData)
+        // send removed images as a JSON string
+        formData.append("removedImages", JSON.stringify(this.state.removedImages))
 
         axios.put(`${SERVER_HOST}/products/edit/${this.props.product._id}`, formData, {
             headers: {
                 "authorization": localStorage.token,
                 "Content-Type": "multipart/form-data"
             }
+        }).then(res => {
+            if (res.data) {
+                console.log("Product updated successfully")
+                this.props.onClose();
+            } else {
+                console.log("Updating product failed")
+            }
         })
-            .then(res => {
-                if (res.data) {
-                    console.log("Product updated successfully")
-                    this.props.onClose()
-                } else {
-                    console.log("Updating product failed")
-                }
-            })
     }
+
 
     render() {
         const { onClose } = this.props
@@ -219,7 +231,13 @@ export default class EditProduct extends Component {
                                 <div className="imagePreview">
                                     {Array.isArray(productImages) && productImages.map((image, index) => (
                                         <div key={index} className="imageContainer">
-                                            <button className="removeImageButton" onClick={() => this.removeImage(index)}>&#x2715;</button>
+                                            <button
+                                                className="removeImageButton"
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Prevents triggering parent handlers
+                                                    this.removeImage(index);
+                                                }}>
+                                                &#x2715;</button>
                                             <img
                                                 src={typeof image === "string" ? image : URL.createObjectURL(image)}
                                                 alt="Product"
