@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import axios from "axios"
-import {Link, Redirect} from "react-router-dom"
+import {Link} from "react-router-dom"
+import { ToastContainer, toast } from "react-toastify"
 import { SERVER_HOST } from "../config/global_constants"
 
 export default class ProductPage extends Component {
@@ -9,6 +10,7 @@ export default class ProductPage extends Component {
         this.state = {
             product: [],
             productImages: {},
+            slideIndex: 1,
         }
     }
 
@@ -20,6 +22,11 @@ export default class ProductPage extends Component {
                         product: res.data
                     }, () => {this.fetchProductImages(res.data)})
                 }
+            })
+            .catch(err => {
+                toast.error(err.response?.data?.errorMessage || "Error fetching product", {
+                    position: "bottom-right",
+                })
             })
     }
 
@@ -46,15 +53,34 @@ export default class ProductPage extends Component {
                         }
                     })
                     .catch(err => {
-                        console.error("Error fetching image:", err)
+                        toast.error(err.response?.data?.errorMessage || "Error fetching product image", {
+                            position: "bottom-right",
+                        })
                     })
             })
         }
     }
 
+    plusDivs = (n) => {
+        this.showDivs(this.state.slideIndex + n)
+    }
+
+    showDivs = (n) => {
+        const images = this.state.product.images || []
+        let newIndex = n
+
+        if (n > images.length) {
+            newIndex = 1
+        }
+        if (n < 1) {
+            newIndex = images.length
+        }
+
+        this.setState({ slideIndex: newIndex })
+    }
+
     render() {
-        const { product, productImages } = this.state
-        // console.log(product)
+        const { product, productImages, slideIndex } = this.state;
 
         let specs = product.specifications || []
 
@@ -65,15 +91,20 @@ export default class ProductPage extends Component {
                         <h2>{product.name}</h2>
                     </div>
 
-
                     <div className="productImgBox boxes">
-                        {(product.images || []).map((image, index) => (
-                            <img
-                                src={productImages[image.filename]}
-                                key={index}
-                                alt={`Product image ${index + 1}`}
-                            />
-                        ))}
+                        <div className="imageSlider">
+                            {(product.images || []).map((image, index) => (
+                                <div
+                                    key={index}
+                                    className="mySlides"
+                                    style={{display: (index + 1) === slideIndex ? "block" : "none"}}
+                                >
+                                    <img src={productImages[image.filename]} alt={`Product ${index + 1}`}/>
+                                </div>
+                            ))}
+                            <button className="w3-button w3-display-left" onClick={() => this.plusDivs(-1)}>&#10094;</button>
+                            <button className="w3-button w3-display-right" onClick={() => this.plusDivs(1)}>&#10095;</button>
+                        </div>
                     </div>
 
 
@@ -118,38 +149,7 @@ export default class ProductPage extends Component {
                         </ul>
                     </div>
                 </div>
-
-                <div className="otherProducts boxes">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias animi blanditiis consequuntur
-                        debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis,
-                        perspiciatis
-                        quam quia quidem quo voluptatem.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias animi blanditiis consequuntur
-                        debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis,
-                        perspiciatis
-                        quam quia quidem quo voluptatem.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    A alias animi blanditiis consequuntur
-                    debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis, perspiciatis
-                    quam quia quidem quo voluptatem.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
-                    alias animi blanditiis consequuntur
-                    debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis, perspiciatis
-                    quam quia quidem quo voluptatem.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias animi blanditiis consequuntur
-                        debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis,
-                        perspiciatis
-                        quam quia quidem quo voluptatem.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                    A alias animi blanditiis consequuntur
-                    debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis, perspiciatis
-                    quam quia quidem quo voluptatem.</p><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A
-                    alias animi blanditiis consequuntur
-                    debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis, perspiciatis
-                    quam quia quidem quo voluptatem.</p>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A alias animi blanditiis consequuntur
-                        debitis exercitationem expedita fugiat iusto laborum magni modi neque, non officiis,
-                        perspiciatis
-                        quam quia quidem quo voluptatem.</p>
-
-                </div>
+                <ToastContainer/>
             </div>
         )
     }
