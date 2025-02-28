@@ -20,6 +20,12 @@
 .productImgBox {
   grid-column: 1 / 2;
   grid-row: 2;
+  width: 100%;
+  box-sizing: border-box; }
+
+.productImgBox {
+  grid-column: 1 / 2;
+  grid-row: 2;
   width: 100%; }
 
 .productMainBox {

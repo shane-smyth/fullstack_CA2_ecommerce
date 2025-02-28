@@ -1,34 +1,124 @@
 const router = require('express').Router()
+let createError = require('http-errors')
+const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken')
+const fs = require('fs')
+const JWT_PRIVATE_KEY = fs.readFileSync(process.env.JWT_PRIVATE_KEY_FILENAME, 'utf8')
 
-let users =
-    [
-        {
-            userId: "U001",
-            name: "guest user",
-            email: "guest@gmail.com",
-            password: "password",
-            accessLevel: "guest"
-        },
-        {
-            userId: "U002",
-            name: "logged in user",
-            email: "loggedIn@gmail.com",
-            password: "password",
-            accessLevel: "user"
-        },
-        {
-            userId: "U003",
-            name: "admin",
-            email: "admin@gmail.com",
-            password: "password",
-            accessLevel: "admin"
+const usersModel = require('../models/users')
+
+const getAllUsers = (req, res, next) => {
+    usersModel.find((err, data) => {
+        if (err) {
+            return next(err)
         }
-    ]
+        res.json(data)
+    })
+}
 
-// read all items from products JSON
-router.get(`/users`, (req, res) => {
-    // console.log(req)
-    res.json(users)
-})
+const getOneUser = (req, res, next) => {
+    usersModel.findById(req.params.id, (err, data) => {
+        if (err) {
+            return next(err)
+        }
+        res.json(data)
+    })
+}
+
+const checkThatUserExistsInUsersCollection = (req, res, next) => {
+    usersModel.findOne({email: req.body.email}, (err, data) => {
+        if (err) {
+            return next(err)
+        }
+        if (!data) {
+            return next(createError(401, "User not found"))
+        }
+        req.data = data
+        return next()
+    })
+}
+
+const checkThatJWTPasswordIsValid = (req, res, next) => {
+    bcrypt.compare(req.body.password, req.data.password, (err, result) => {
+        if (err) {
+            return next(err)
+        }
+        if (!result) {
+            return next(createError(401), "Invalid password")
+        }
+        return next()
+    })
+}
+
+const checkThatUserIsNotAlreadyExists = (req, res, next) => {
+    usersModel.findOne({ email: req.body.email }, (err, data) => {
+        if (err) {
+            return next(err)
+        }
+        if (data) {
+            return next(createError(409, "User already exists"))
+        }
+        return next()
+    })
+}
+
+const addNewUserToUserCollection = (req, res, next) => {
+    const { username, email, password } = req.body
+
+    bcrypt.hash(password, parseInt(process.env.PASSWORD_HASH_SALT_ROUNDS), (err, hash) => {
+        if (err) {
+            return next(err)
+        }
+
+        usersModel.create({ username, email, password: hash }, (error, data) => {
+            if (error) {
+                return next(error)
+            }
+            return res.json(data)
+        })
+    })
+}
+
+const returnUsersDetailsAsJson = (req, res, next) => {
+    const {username, email, password} = req.data
+    const token = jwt.sign({email: email, accessLevel: req.data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
+    return res.json({ name: username, accessLevel: req.data.accessLevel, token:token})
+}
+
+const deleteUser = (req, res, next) => {
+    const userId = req.params.id
+    usersModel.findByIdAndDelete(userId, (error, data) => {
+        if (error) {
+            return next(error)
+        }
+        if (!data) {
+            return res.status(404).json({ errorMessage: "User not found" })
+        }
+        return res.json({ message: "User deleted successfully", data })
+    })
+}
+
+const logout = (req, res, next) => {
+    return res.json({})
+}
+
+// get all records
+router.get(`/users`, getAllUsers)
+
+// get one record
+router.get(`/users/:id`, getOneUser)
+
+// register new user
+router.post(`/users/register`, checkThatUserIsNotAlreadyExists, addNewUserToUserCollection)
+
+// login
+router.post(`/users/login`, checkThatUserExistsInUsersCollection, checkThatJWTPasswordIsValid, returnUsersDetailsAsJson)
+
+// delete user
+router.delete(`/users/delete/:id`, deleteUser)
+
+// logout
+router.post(`/users/logout`, logout)
+
 
 module.exports = router

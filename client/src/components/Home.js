@@ -62,10 +62,6 @@ export default class Home extends Component {
                 <div>
                     <Brands/>
                 </div>
-
-                {/*<div>*/}
-                {/*    <Shop/>*/}
-                {/*</div>*/}
             </div>
         )
     }

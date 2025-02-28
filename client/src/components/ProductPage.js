@@ -1,19 +1,19 @@
 import React, { Component } from "react"
 import axios from "axios"
-// import {Link, Redirect} from "react-router-dom"
+import {Link, Redirect} from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"
 import BuyProduct from "./BuyProduct";
 
 export default class ProductPage extends Component {
-
     constructor(props) {
         super(props)
 
         this.state = {
             product: [],
             quantity: 1,
-            showOutOfStockModal: false, 
+            showOutOfStockModal: false,
             showQuantityLimitModal: false,
+            productImages: {},
         }
     }
 
@@ -23,28 +23,57 @@ export default class ProductPage extends Component {
                 if (res.data) {
                     this.setState({
                         product: res.data
-                    })
+                    }, () => {this.fetchProductImages(res.data)})
                 }
             })
+    }
+
+    fetchProductImages = (product) => {
+        const images = product.images || [] // Ensure images is an array
+        if (images.length > 0) {
+            images.forEach(image => {
+                axios.get(`${SERVER_HOST}/products/photo/${image.filename}`)
+                    .then(res => {
+                        if (res.data) {
+                            if (res.data.errorMessage) {
+                                console.log(res.data.errorMessage)
+                            } else {
+                                // Update the productImages state with the fetched image
+                                this.setState(prevState => ({
+                                    productImages: {
+                                        ...prevState.productImages,
+                                        [image.filename]: `data:;base64,${res.data.image}`
+                                    }
+                                }))
+                            }
+                        } else {
+                            console.log("Image not found")
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error fetching image:", err)
+                    })
+            })
+        }
     }
 
     handleAddToCart = () => {
         const { product , quantity } = this.state
 
         if (product.stock <= 0) {
-            // console.log("out of stock showing modal")  
-            this.setState({ 
-                showOutOfStockModal: true 
-            })  
-            return  
+            // console.log("out of stock showing modal")
+            this.setState({
+                showOutOfStockModal: true
+            })
+            return
         }
 
         if (quantity > product.stock) {
-            // console.log("over stock showing modal")  
-            this.setState({   
-                showQuantityLimitModal: true 
-            })  
-            return  
+            // console.log("over stock showing modal")
+            this.setState({
+                showQuantityLimitModal: true
+            })
+            return
         }
 
         this.props.history.push({
@@ -60,15 +89,15 @@ export default class ProductPage extends Component {
     }
 
     closeOutOfStockModal = () => {
-        this.setState({ showOutOfStockModal: false })  
-    }  
+        this.setState({ showOutOfStockModal: false })
+    }
 
     closeQuantityLimitModal = () => {
-        this.setState({   showQuantityLimitModal: false })  
-    }  
+        this.setState({   showQuantityLimitModal: false })
+    }
 
     render() {
-        const { product, quantity, showOutOfStockModal,   showQuantityLimitModal } = this.state
+        const { product, productImages, quantity, showOutOfStockModal,   showQuantityLimitModal } = this.state
         // console.log(product)
 
         let specs = product.specifications || []
@@ -79,12 +108,22 @@ export default class ProductPage extends Component {
                     <div className="productName boxes">
                         <h2>{product.name}</h2>
                     </div>
+
+
                     <div className="productImgBox boxes">
-                        <img src={product.images} alt=""/>
+                        {(product.images || []).map((image, index) => (
+                            <img
+                                src={productImages[image.filename]}
+                                key={index}
+                                alt={`Product image ${index + 1}`}
+                            />
+                        ))}
                     </div>
+
 
                     <div className="productMainBox boxes">
                         <h1>€{product.price}</h1>
+
                         <h3>{product.description}</h3>
 
                         {product.stock <= 0 ? <p style={{color: "red"}}>Out of stock</p> :
@@ -117,9 +156,9 @@ export default class ProductPage extends Component {
                         <h2>{product.subcategory}</h2>
                         <ul>
                             {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
-                            {Object.entries(specs).map(([key, value]) => (
-                                <li key={key}>
-                                    {key}: {value}
+                            {(product.specifications || []).map((spec, index) => (
+                                <li key={index}>
+                                    <strong>{spec.key}:</strong> {spec.value}
                                 </li>
                             ))}
                         </ul>
