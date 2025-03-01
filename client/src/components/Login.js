@@ -1,6 +1,7 @@
-import React, {Component} from "react"
+import React, {Component, createRef} from "react"
 import {Redirect, Link} from "react-router-dom"
 import axios from "axios"
+import Toast from "./Toast"
 
 import {SERVER_HOST} from "../config/global_constants"
 
@@ -16,28 +17,27 @@ export default class Login extends Component
             password:"",
             isLoggedIn:false
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
         this.inputToFocus.focus()
     }
 
-    handleChange = (e) =>
-    {
+    handleChange = (e) => {
         this.setState({[e.target.name]: e.target.value})
     }
 
 
-    handleSubmit = (e) =>
-    {
+    handleSubmit = (e) => {
         e.preventDefault()
 
         axios.post(`${SERVER_HOST}/users/login`, {
             email: this.state.email,
             password: this.state.password,
         })
-            .then(res =>
-            {
+            .then(res => {
                 if(res.data) {
                     if (res.data.errorMessage) {
                         console.log(res.data.errorMessage)
@@ -58,6 +58,11 @@ export default class Login extends Component
                     console.log("Login failed")
                 }
             })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "No User Found"
+                )
+            })
     }
 
 
@@ -70,7 +75,7 @@ export default class Login extends Component
                         <h1>Login</h1>
                     </div>
 
-                    {this.state.isLoggedIn ? <Redirect to="/"/> : null}
+                    {this.state.isLoggedIn ? <Redirect to="/"  /> : null}
                     <div className="labelInput">
                         <label>Email:</label>
                         <input
@@ -102,6 +107,7 @@ export default class Login extends Component
                         <Link className="red-button" to="/">Cancel</Link>
                     </div>
                 </form>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

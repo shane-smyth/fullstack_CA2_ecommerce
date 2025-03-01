@@ -1,8 +1,9 @@
-import React, {Component} from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
-import NewProduct from "./NewProduct";
-import EditProduct from "./EditProduct";
+import NewProduct from "./NewProduct"
+import EditProduct from "./EditProduct"
+import Toast from "./Toast"
 
 export default class AdminShowProducts extends Component {
     constructor(props) {
@@ -18,6 +19,8 @@ export default class AdminShowProducts extends Component {
             selectedProduct: null,
             productImages: {},
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -32,6 +35,11 @@ export default class AdminShowProducts extends Component {
                 else {
                     console.log("Records not found")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Failed to fetch products"
+                )
             })
     }
 
@@ -56,6 +64,11 @@ export default class AdminShowProducts extends Component {
                             } else {
                                 console.log("Image not found")
                             }
+                        })
+                        .catch(err => {
+                            this.toastRef.current.showError(
+                                err.response.data.errorMessage || "Error fetching product image"
+                            )
                         })
                 })
             }
@@ -87,6 +100,11 @@ export default class AdminShowProducts extends Component {
                 else {
                     console.log("record not deleted")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "An error occurred trying to delete"
+                )
             })
     }
 
@@ -183,9 +201,9 @@ export default class AdminShowProducts extends Component {
                         </div>
                     </div>
                 ))}
-
                 {addProduct && <NewProduct onClose={this.closeAddModal} />}
                 {editProduct && <EditProduct onClose={this.closeEditModal} product={this.state.selectedProduct}/>}
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

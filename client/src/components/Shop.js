@@ -1,7 +1,8 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import DisplayAllProducts from "./DisplayAllProducts"
-import {SERVER_HOST} from "../config/global_constants";
+import Toast from "./Toast"
+import {SERVER_HOST} from "../config/global_constants"
 
 
 export default class Shop extends Component {
@@ -24,6 +25,8 @@ export default class Shop extends Component {
             allCategories: false,
             sortOption: "None Selected",
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -49,6 +52,11 @@ export default class Shop extends Component {
                 else {
                     console.log("Records not found.")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error fetching products"
+                )
             })
     }
 
@@ -270,6 +278,8 @@ export default class Shop extends Component {
                 <div className="shopProducts boxes">
                     {filteredProducts.length <= 0 ? <h3>No Products Found</h3> : <DisplayAllProducts products={filteredProducts} />}
                 </div>
+
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

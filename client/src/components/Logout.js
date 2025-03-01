@@ -22,16 +22,12 @@ export default class Logout extends Component
         e.preventDefault()
 
         axios.post(`${SERVER_HOST}/users/logout`)
-            .then(res =>
-            {
-                if(res.data)
-                {
-                    if (res.data.errorMessage)
-                    {
+            .then(res => {
+                if(res.data) {
+                    if (res.data.errorMessage) {
                         console.log(res.data.errorMessage)
                     }
-                    else
-                    {
+                    else {
                         console.log("User logged out")
 
                         localStorage.clear()
@@ -41,10 +37,14 @@ export default class Logout extends Component
                         window.location.reload(true) //https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
                     }
                 }
-                else
-                {
+                else {
                     console.log("Logout failed")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Something went wrong"
+                )
             })
     }
 

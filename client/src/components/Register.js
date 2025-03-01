@@ -2,6 +2,7 @@ import React, {Component} from "react"
 import axios from "axios"
 import {Link, Redirect} from "react-router-dom";
 import {SERVER_HOST} from "../config/global_constants";
+import Toast from "./Toast";
 
 export default class Register extends Component {
     constructor(props) {
@@ -14,6 +15,8 @@ export default class Register extends Component {
             confirmPassword: "",
             isRegistered: false,
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -75,6 +78,12 @@ export default class Register extends Component {
                     console.log("Registration failed")
                 }
             })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Something went wrong"
+                )
+            })
+
     }
 
     render() {
@@ -148,6 +157,7 @@ export default class Register extends Component {
                         <Link type="button" to={"/"}>Cancel</Link>
                     </div>
                 </form>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

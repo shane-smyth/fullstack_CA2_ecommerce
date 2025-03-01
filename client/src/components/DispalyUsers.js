@@ -1,8 +1,8 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
-import {Link} from "react-router-dom"
-import AdminShowUser from "./AdminShowUser";
+import AdminShowUser from "./AdminShowUser"
+import Toast from "./Toast"
 
 
 export default class DisplayUsers extends Component {
@@ -16,6 +16,8 @@ export default class DisplayUsers extends Component {
             searchQuery: "",
             sortBy: "None Selected",
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -30,6 +32,11 @@ export default class DisplayUsers extends Component {
                 else {
                     console.log("Records not found")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "An error occurred trying to fetch users"
+                )
             })
     }
 
@@ -64,6 +71,11 @@ export default class DisplayUsers extends Component {
                 else {
                     console.log("record not deleted")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "an error occurred trying to delete"
+                )
             })
     }
 
@@ -132,7 +144,6 @@ export default class DisplayUsers extends Component {
                         </div>
                     </div>
                 ))}
-
                 {selectedUser && <AdminShowUser user={selectedUser} onClose={this.closeModal} />}
             </div>
         )

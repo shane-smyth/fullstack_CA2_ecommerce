@@ -1,5 +1,6 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import {Link} from "react-router-dom"
+import Toast from "./Toast"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
 
@@ -11,6 +12,8 @@ export default class ProductCard extends Component {
         this.state = {
             productImages: {},
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -42,6 +45,11 @@ export default class ProductCard extends Component {
                             } else {
                                 console.log("Image not found")
                             }
+                        })
+                        .catch(err => {
+                            this.toastRef.current.showError(
+                                err.response.data.errorMessage || "Error fetching product images"
+                            )
                         })
                 })
             }
@@ -85,6 +93,7 @@ export default class ProductCard extends Component {
                         </div>
                     </Link>
                 ))}
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

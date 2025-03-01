@@ -1,8 +1,8 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import {Link} from "react-router-dom"
-import { ToastContainer, toast } from "react-toastify"
 import { SERVER_HOST } from "../config/global_constants"
+import Toast from "./Toast"
 
 export default class ProductPage extends Component {
     constructor(props) {
@@ -12,6 +12,8 @@ export default class ProductPage extends Component {
             productImages: {},
             slideIndex: 1,
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -24,9 +26,9 @@ export default class ProductPage extends Component {
                 }
             })
             .catch(err => {
-                toast.error(err.response?.data?.errorMessage || "Error fetching product", {
-                    position: "bottom-right",
-                })
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error fetching product"
+                )
             })
     }
 
@@ -53,9 +55,9 @@ export default class ProductPage extends Component {
                         }
                     })
                     .catch(err => {
-                        toast.error(err.response?.data?.errorMessage || "Error fetching product image", {
-                            position: "bottom-right",
-                        })
+                        this.toastRef.current.showError(
+                            err.response.data.errorMessage || "Error fetching image"
+                        )
                     })
             })
         }
@@ -149,7 +151,7 @@ export default class ProductPage extends Component {
                         </ul>
                     </div>
                 </div>
-                <ToastContainer/>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }
