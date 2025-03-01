@@ -17,8 +17,10 @@ export default class Brands extends Component {
         axios.get(`${SERVER_HOST}/brands`)
             .then(res => {
                 if (res.data) {
+                    const specificBrands = ["casio", "fender", "gibson", "yamaha", "pearl"]
+                    const filteredBrands = res.data.filter(brand => specificBrands.includes(brand.toLowerCase()))
                     this.setState({
-                        brands: res.data
+                        brands: filteredBrands
                     })
                 }
                 else {
@@ -32,12 +34,10 @@ export default class Brands extends Component {
             <div className="allBrandsContainer">
                 <h2>Brands Offered</h2>
                 <ul>
-                    {this.state.brands.slice(0,5).map((brand, index) => (
+                    {this.state.brands.map((brand, index) => (
                         <li key={index}>
-                            <Link
-                                // to={`/shop/brand/${brand}`}>
-                                to={`/shop?brand=${encodeURIComponent(brand)}`}
-                            >
+                            {/*to={`/shop/brand/${brand}`}>*/}
+                            <Link to={`/shop?brand=${encodeURIComponent(brand)}`}>
                                 <img src={`/images/${brand.toLowerCase()}.png`} alt={brand}/>
                                 <p>{brand}</p>
                             </Link>

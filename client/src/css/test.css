@@ -6,6 +6,7 @@
   padding: 20px; }
 
 .categoryDisplay h2 {
+  border-bottom: lightgray solid 1px;
   padding-bottom: 2rem;
   margin-top: 3rem;
   text-align: center; }
@@ -59,13 +60,13 @@
 .allBrandsContainer ul li {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   background-color: white;
-  width: 250px;
+  width: 200px;
   text-align: center;
   padding: 10px;
-  margin: 40px;
+  margin: 20px;
   transition: transform 0.3s ease; }
 
 .allBrandsContainer ul li:hover {
@@ -75,14 +76,15 @@
 
 .allBrandsContainer ul li img {
   width: 100%;
-  height: auto;
+  height: 120px;
+  object-fit: cover;
   padding-bottom: 10px; }
 
 .allBrandsContainer ul li p {
   font-weight: bold;
   font-size: 14px;
   text-align: center;
-  margin-top: auto; }
+  margin-top: 10px; }
 
 .modal {
   display: none;
@@ -204,3 +206,5 @@
 
 #payPalPaymentID {
   font-weight: bold; }
+
+/*# sourceMappingURL=test.css.map */

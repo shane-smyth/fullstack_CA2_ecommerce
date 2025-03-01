@@ -6,7 +6,6 @@ import {SANDBOX_CLIENT_ID, SERVER_HOST} from "../config/global_constants"
 import PayPalMessage from "./PayPalMessage"
 import {PayPalButtons, PayPalScriptProvider} from "@paypal/react-paypal-js"
 
-
 export default class BuyProduct extends Component {
 
     constructor(props) {
@@ -19,9 +18,8 @@ export default class BuyProduct extends Component {
         }
     }
 
-
     createOrder = (data, actions) => {
-        const amount = this.props.totalPrice
+        const amount = this.props.price
         console.log("Amount: ", amount)
 
         return actions.order.create({
@@ -32,7 +30,6 @@ export default class BuyProduct extends Component {
             }],
         })
     }
-
 
     onApprove = (paymentData) => {
         console.log("PaymentData: ", paymentData)
@@ -56,7 +53,6 @@ export default class BuyProduct extends Component {
             })
     }
 
-
     onError = (errorData) => {
         // console.error("PayPal Error:", errorData)
         this.setState({
@@ -64,7 +60,6 @@ export default class BuyProduct extends Component {
             redirectToPayPalMessage: true
         })
     }
-
 
     onCancel = (cancelData) => {
         console.log("PayPal Cancelled:", cancelData)
@@ -75,10 +70,8 @@ export default class BuyProduct extends Component {
         })
     }
 
-
-
     render() {
-    console.log(this.props)
+        console.log(this.props)
         return (
             <div>
                 {this.state.redirectToPayPalMessage ? <Redirect to= {`/PayPalMessage/${this.state.payPalMessageType}/${this.state.payPalOrderID}`}/> : null}

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import axios from "axios"
 import {Link, Redirect} from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"
-import BuyProduct from "./BuyProduct";
+import BuyProduct from "./BuyProduct"
 
 export default class ProductPage extends Component {
     constructor(props) {
@@ -58,7 +58,7 @@ export default class ProductPage extends Component {
     }
 
     handleAddToCart = () => {
-        const { product , quantity } = this.state
+        const { product, quantity, productImages } = this.state
 
         if (product.stock <= 0) {
             // console.log("out of stock showing modal")
@@ -76,9 +76,14 @@ export default class ProductPage extends Component {
             return
         }
 
+        const productWithImages = {
+            ...product,
+            images: product.images.map(image => productImages[image.filename])
+        }
+
         this.props.history.push({
             pathname: "/cart",
-            state: { product , quantity },
+            state: { product: productWithImages, quantity },
         })
     }
 
@@ -146,7 +151,7 @@ export default class ProductPage extends Component {
                             </select>
 
                             <button onClick={this.handleAddToCart}>
-                                    <p>ADD TO BAG</p>
+                                <p>ADD TO BAG</p>
                             </button>
                         </div>
                         <br/><BuyProduct productId={product.productId} price={product.price} />

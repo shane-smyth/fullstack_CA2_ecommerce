@@ -44,8 +44,8 @@ export default class Shop extends Component {
 
                     const { location } = this.props
                     console.log("Location:", location)
-                    const { brand, category } = location && location.search ? queryString.parse(location.search) : {}
-                    console.log("Query Parameters - Brand:", brand, "Category:", category)
+                    const { brand, category, search } = location && location.search ? queryString.parse(location.search) : {}
+                    console.log("Query Parameters - Brand:", brand, "Category:", category, "Search:", search)
 
                     let filteredProducts = products
                     if (brand) {
@@ -53,6 +53,17 @@ export default class Shop extends Component {
                     }
                     if (category) {
                         filteredProducts = filteredProducts.filter((product) => product.category.includes(category))
+                    }
+                    if (search) {
+                        const searchProduct = cleanSearch(search)
+                        filteredProducts = filteredProducts.filter(
+                            (product) =>
+                                cleanSearch(String(product.name)).includes(searchProduct) ||
+                                cleanSearch(String(product.description)).includes(searchProduct) ||
+                                cleanSearch(String(product.category)).includes(searchProduct) ||
+                                cleanSearch(String(product.subcategory)).includes(searchProduct) ||
+                                cleanSearch(String(product.brand)).includes(searchProduct)
+                        )
                     }
 
                     this.setState({
@@ -105,26 +116,26 @@ export default class Shop extends Component {
     }
 
     handleCategoryChange = (category) => {
-        const {selectedCategory} = this.state
+        const { selectedCategory } = this.state
         const updatedCategories = selectedCategory.includes(category)
             ? selectedCategory.filter((c) => c !== category)
             : [...selectedCategory, category]
-        this.setState({selectedCategory: updatedCategories}, this.filterData)
+        this.setState({ selectedCategory: updatedCategories }, this.filterData)
     }
 
     filterData = () => {
-        const {products, selectedBrand, priceRange, inStock, selectedRating, selectedCategory} = this.state
+        const { products, selectedBrand, priceRange, inStock, selectedRating, selectedCategory } = this.state
 
         let filteredProducts = products.filter((product) => {
             const matchesBrand = selectedBrand.length === 0 || selectedBrand.includes(product.brand)
             const matchesPrice = product.price >= priceRange[0] && product.price <= priceRange[1]
             const matchesStock = !inStock || product.stock > 0
             const matchesRating = selectedRating.length === 0 || selectedRating.includes(product.rating)
-            const matchesCategory = selectedCategory.length === 0 || selectedCategory.includes(product.category)
+            const matchesCategory = selectedCategory.length === 0 || selectedCategory.some(category => product.category.includes(category))
 
             return matchesBrand && matchesPrice && matchesStock && matchesRating && matchesCategory
         })
-        this.setState({filteredProducts}, this.sortProducts)
+        this.setState({ filteredProducts }, this.sortProducts)
     }
 
     handleSortChange = (e) => {
@@ -156,22 +167,22 @@ export default class Shop extends Component {
 
         // let { products } = this.state
 
-        const { location } = this.props
-        const { search , category, brand} = location ? queryString.parse(location.search) : {}
+        // const { location } = this.props
+        // const { search , category, brand} = location ? queryString.parse(location.search) : {}
 
-        let displayProducts = filteredProducts
-        if (search) {
-            const searchProduct = cleanSearch(search)
+        // let displayProducts = filteredProducts
+        // if (search) {
+        //     const searchProduct = cleanSearch(search)
 
-            displayProducts = displayProducts.filter(
-                (product) =>
-                    cleanSearch(String(product.name)).includes(searchProduct) ||
-                    cleanSearch(String(product.description)).includes(searchProduct) ||
-                    cleanSearch(String(product.category)).includes(searchProduct) ||
-                    cleanSearch(String(product.subcategory)).includes(searchProduct) ||
-                    cleanSearch(String(product.brand)).includes(searchProduct)
-            )
-        }
+        //     displayProducts = displayProducts.filter(
+        //         (product) =>
+        //             cleanSearch(String(product.name)).includes(searchProduct) ||
+        //             cleanSearch(String(product.description)).includes(searchProduct) ||
+        //             cleanSearch(String(product.category)).includes(searchProduct) ||
+        //             cleanSearch(String(product.subcategory)).includes(searchProduct) ||
+        //             cleanSearch(String(product.brand)).includes(searchProduct)
+        //     )
+        // }
 
         // if (brand) {
         //     products = products.filter(product => product.brand === brand)
@@ -191,7 +202,7 @@ export default class Shop extends Component {
                     <div className="filterSortBar">
                         <h6>☰ Filters</h6>
 
-                        {/* sortign */}
+                        {/* sorting */}
                         <div className="sortDropdown">
                             <h6><label htmlFor="sort">Sort By ↕ &nbsp;</label></h6>
                             <select
