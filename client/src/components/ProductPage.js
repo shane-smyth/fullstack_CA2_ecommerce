@@ -135,6 +135,7 @@ export default class ProductPage extends Component {
                             <p style={{color: "#28b845"}}>In stock</p>}
 
                         <div className="productPageAddToBasketBox boxes">
+                            <h3>Add Multiple to Cart</h3>
                             <select
                                 value={quantity}
                                 onChange={this.handleQuantityChange}>
@@ -149,12 +150,20 @@ export default class ProductPage extends Component {
                                 <option value={9}>9</option>
                                 <option value={10}>10</option>
                             </select>
-
                             <button onClick={this.handleAddToCart}>
                                 <p>ADD TO BAG</p>
                             </button>
                         </div>
-                        <br/><BuyProduct productId={product.productId} price={product.price} />
+
+                        <br/>
+                        <div className="paypal-option">
+                            <h3>Buy Now (1 Item Only)</h3>
+                            <BuyProduct productId={product._id} price={product.price} quantity={1} />
+                            <p style={{ color: "gray", fontSize: "14px" }}>
+                                This PayPal option is only for purchasing <strong>one</strong> item.
+                            </p>
+                        </div>
+                        {/*<BuyProduct productId={product._id} price={product.price} quantity={this.state.quantity}/>*/}
                     </div>
 
                     <div className="productSpecsBox boxes">

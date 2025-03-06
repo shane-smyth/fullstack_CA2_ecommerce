@@ -17,46 +17,35 @@ export default class ShoppingCart extends Component {
         }
     }
 
-    // componentDidMount() {
-    //     const { product, quantity } = this.props.location.state || {}
-    //
-    //     if (product) {
-    //         this.setState((prevState) => ({
-    //             cartItems: [...prevState.cartItems , {
-    //                 ...product, quantity
-    //             }],
-    //         }))
-    //     }
-    // }
-    // Warning: Each child in a list should have a unique "key" prop.
-    //
-    // Check the render method of `ShoppingCart`. See https://reactjs.org/link/warning-keys for more information.
     componentDidMount() {
         const storedCart = localStorage.getItem("cartItems")
         const cartItems = storedCart ? JSON.parse(storedCart) : []
 
-        const { product, quantity } = this.props.location.state || {}
+        const { product, quantity = 1 } = this.props.location.state || {}
 
         if (product) {
-            const existingProductIndex = cartItems.findIndex((item) => item.productId === product.productId)
+            console.log("current cart:", cartItems)
+
+            const existingProductIndex = cartItems.findIndex((item) => item._id === product._id)
 
             if (existingProductIndex === -1) {
                 cartItems.push({ ...product, quantity })
             }
+            else {
+                console.log("products exisits in cart updating quantity:", product)
+                cartItems[existingProductIndex].quantity += quantity
+            }
 
             localStorage.setItem("cartItems", JSON.stringify(cartItems))
-        }
 
-        this.setState({ cartItems }, this.fetchProductImages)
+            this.setState({ cartItems }, this.fetchProductImages)
+        }
+        else {
+            this.setState({ cartItems }, this.fetchProductImages)
+        }
     }
 
-    // getting consoel error:
-    // ShoppingCart.js:59
-    //
-    //  GET http://localhost:4000/products/photo/undefined 500 (Internal Server Error)
-    // ShoppingCart.js:71
-    //  Error fetching image:
-    // AxiosError {message: 'Request failed with status code 500', name: 'AxiosError', code: 'ERR_BAD_RESPONSE', config: {…}, request: XMLHttpRequest, …}
+
     fetchProductImages = () => {
         const { cartItems } = this.state
         cartItems.forEach(product => {
@@ -68,7 +57,7 @@ export default class ShoppingCart extends Component {
                             this.setState(prevState => ({
                                 productImages: {
                                     ...prevState.productImages,
-                                    [product.productId]: `data:;base64,${res.data.image}`
+                                    [product._id]: `data:;base64,${res.data.image}`
                                 }
                             }))
                         }
@@ -86,7 +75,7 @@ export default class ShoppingCart extends Component {
 
     handleUpdateQuantity = (productId, newQty) => {
         const { cartItems } = this.state
-        const product = cartItems.find((product) => product.productId === productId)
+        const product = cartItems.find((product) => product._id === productId)
 
         if (newQty > product.stock) {
             this.setState({
@@ -98,7 +87,7 @@ export default class ShoppingCart extends Component {
 
         this.setState((prevState) => {
             const updatedItems = prevState.cartItems.map(product =>
-                product.productId === productId ? { ...product, quantity: newQty } : product
+                product._id === productId ? { ...product, quantity: newQty } : product
             )
             this.updateCartStorage(updatedItems)
             return { cartItems: updatedItems }
@@ -112,22 +101,16 @@ export default class ShoppingCart extends Component {
         })
     }
 
-    // handleRemoveItem = (productId) => {
-    //     this.setState((prevState) => ({
-    //             cartItems: prevState.cartItems.filter(product => product.productId !== productId),
-    //         })
-    //     )
-    // }
     handleRemoveItem = (productId) => {
         this.setState((prevState) => {
-            const updatedItems = prevState.cartItems.filter((product) => product.productId !== productId)
+            const updatedItems = prevState.cartItems.filter((product) => product._id !== productId)
             this.updateCartStorage(updatedItems)
             return { cartItems: updatedItems }
         })
     }
 
     openRemoveConfirmModal = (productID) => {
-        const productToRemove = this.state.cartItems.find((product) => product.productId === productID)
+        const productToRemove = this.state.cartItems.find((product) => product._id === productID)
         this.setState({
             showRemoveConfirmModal: true,
             productToRemove,
@@ -144,7 +127,7 @@ export default class ShoppingCart extends Component {
     removeProduct = () => {
         const { productToRemove } = this.state
         if (productToRemove) {
-            this.handleRemoveItem(productToRemove.productId)
+            this.handleRemoveItem(productToRemove._id)
             this.closeRemoveConfirmModal()
         }
     }
@@ -177,10 +160,10 @@ export default class ShoppingCart extends Component {
                             </thead>
                             <tbody>
                             {cartItems.map((product) => (
-                                <tr key={product.productId}>
+                                <tr key={product._id}>
                                     <td>
                                         <img
-                                            src={productImages[product.productId] || product.images[0]}
+                                            src={productImages[product._id] || product.images[0]}
                                             alt={product.name}
                                             className="productCartImage"
                                         />
@@ -193,7 +176,7 @@ export default class ShoppingCart extends Component {
                                         <select
                                             value={product.quantity}
                                             onChange={(e) =>
-                                                this.handleUpdateQuantity(product.productId, parseInt(e.target.value))
+                                                this.handleUpdateQuantity(product._id, parseInt(e.target.value))
                                             }
                                         >
                                             <option value={1}>1</option>
@@ -210,7 +193,7 @@ export default class ShoppingCart extends Component {
                                     </td>
                                     <td>€{(product.price * product.quantity).toFixed(2)}</td>
                                     <td>
-                                        <button onClick={() => this.openRemoveConfirmModal(product.productId)}>
+                                        <button onClick={() => this.openRemoveConfirmModal(product._id)}>
                                             Remove
                                         </button>
                                     </td>
@@ -223,24 +206,13 @@ export default class ShoppingCart extends Component {
                             <p><strong>Total: </strong>€{totalPrice}</p>
                         </div>
 
-                        {/*<button*/}
-                        {/*    type="button"*/}
-                        {/*    id="checkoutButton"*/}
-                        {/*    disabled={isCartEmpty}*/}
-                        {/*    onClick={this.handleCheckout}*/}
-                        {/*>*/}
-                        {/*    CHECKOUT*/}
-                        {/*</button>*/}
-                        <BuyProduct totalPrice={totalPrice} />
+                        <BuyProduct price={totalPrice} cartItems={cartItems}/>
                     </>
                 }
 
                 {showQuantityLimitModal && (
                     <div id="quantityLimitModal" className="modal active">
                         <div className="modal-content">
-                            {/*<span className="close" onClick={this.closeQuantityLimitModal}>*/}
-                            {/*    &times;*/}
-                            {/*</span>*/}
                             <h2>Stock Limited</h2>
                             <p>
                                 You cannot add more than <strong>{productWithLimit.stock}</strong> of this product to
