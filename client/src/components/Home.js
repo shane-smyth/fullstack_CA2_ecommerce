@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
-import Shop from "./Shop.js"
+// import Shop from "./Shop.js"
 import Categories from "./Categories.js"
 import Brands from "./Brands.js"
 import axios from "axios"
@@ -34,6 +34,7 @@ export default class Home extends Component {
                 <div className="hero">
                     <div className="heroImage grids">
                         <img src="./images/hero-image.png" alt="hero image"/>
+
                     </div>
                     <div className="heroHeader grids">
                         <h1>The Music Shop</h1>

@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import axios from "axios"
-import {Link, Redirect} from "react-router-dom"
+// import {Link, Redirect} from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"
 import BuyProduct from "./BuyProduct"
 
@@ -105,7 +105,7 @@ export default class ProductPage extends Component {
         const { product, productImages, quantity, showOutOfStockModal,   showQuantityLimitModal } = this.state
         // console.log(product)
 
-        let specs = product.specifications || []
+        // let specs = product.specifications || []
 
         return (
             <div className="wholeProductPage">

@@ -56,7 +56,11 @@ let productsSchema = new mongoose.Schema({
         required: [true, "Stock is required"],
         min: [0, "Stock cannot be negative"],
     },
-    specifications: [{ key: String, value: String }]
+    specifications: [{ key: String, value: String }],
+    // sold: {
+    //     type: Boolean,
+    //     default: false,
+    // },
 }, {
     collection: `products`,
 })
