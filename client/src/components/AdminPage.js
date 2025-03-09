@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import NewProduct from "./NewProduct"
 import DisplayUsers from "./DispalyUsers"
 import AdminShowProducts from "./AdminShowProducts"
+import AdminShowSales from "./AdminShowSales";
 // import { Link } from "react-router-dom"
 
 export default class AdminPage extends Component {
@@ -32,7 +33,7 @@ export default class AdminPage extends Component {
                     {activeComponent === null && <AdminShowProducts />}
                     {activeComponent === "ProductManagement" && <div className="adminProdContainer"><AdminShowProducts /></div>}
                     {activeComponent === "UserManagement" && <DisplayUsers />}
-                    {activeComponent === "Orders" && <h2>History</h2>}
+                    {activeComponent === "Orders" && <AdminShowSales />}
                 </div>
             </div>
         )

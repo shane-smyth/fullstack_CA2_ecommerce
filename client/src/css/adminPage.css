@@ -124,4 +124,25 @@
   align-items: center;
   margin-top: 20px; }
 
+.adminShowSales {
+  width: 100%;
+  padding: 20px; }
+
+.adminShowSales h1 {
+  margin-bottom: 20px; }
+
+.adminShowSales th,
+.adminShowSales td {
+  padding: 12px;
+  text-align: left; }
+
+.strikethrough {
+  text-decoration: line-through;
+  opacity: 0.7;
+  color: #888; }
+
+.returned {
+  color: green;
+  font-weight: bold; }
+
 /*# sourceMappingURL=adminPage.css.map */

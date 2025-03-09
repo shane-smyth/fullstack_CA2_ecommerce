@@ -177,7 +177,7 @@
 #checkoutButton:hover:not(:disabled) {
   background-color: #000; }
 
-.emptyCartMessage {
+.emptyMessage {
   text-align: center;
   color: #888; }
 

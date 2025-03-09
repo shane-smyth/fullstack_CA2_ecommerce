@@ -1,4 +1,4 @@
-import React, {Component, createRef} from "react"
+import React, {Component} from "react"
 import {Redirect, Link} from "react-router-dom"
 import axios from "axios"
 import Toast from "./Toast"
@@ -25,12 +25,14 @@ export default class Login extends Component
         this.inputToFocus.focus()
     }
 
-    handleChange = (e) => {
+    handleChange = (e) =>
+    {
         this.setState({[e.target.name]: e.target.value})
     }
 
 
-    handleSubmit = (e) => {
+    handleSubmit = (e) =>
+    {
         e.preventDefault()
 
         axios.post(`${SERVER_HOST}/users/login`, {
@@ -75,7 +77,7 @@ export default class Login extends Component
                         <h1>Login</h1>
                     </div>
 
-                    {this.state.isLoggedIn ? <Redirect to="/"  /> : null}
+                    {this.state.isLoggedIn ? <Redirect to="/"/> : null}
                     <div className="labelInput">
                         <label>Email:</label>
                         <input

@@ -4,6 +4,7 @@ import { Redirect } from "react-router-dom"
 import { SANDBOX_CLIENT_ID, SERVER_HOST } from "../config/global_constants"
 import PayPalMessage from "./PayPalMessage"
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js"
+import { jwtDecode } from "jwt-decode" // https://www.npmjs.com/package/jwt-decode
 
 export default class BuyProduct extends Component {
     constructor(props) {
@@ -32,33 +33,59 @@ export default class BuyProduct extends Component {
     }
 
     onApprove = (paymentData) => {
-        console.log("PaymentData: ", paymentData)
+        console.log("paymentData:", paymentData)
 
-        const payload = {
+        const saleInfo = {
             orderID: paymentData.orderID,
             price: this.props.price,
+            productId: this.props.productId,
+            quantity: this.props.quantity || 1,
+            guestInfo: null,
+        };
+
+        if (localStorage.token && localStorage.token.trim() !== "") {
+            try {
+                const decodedToken = jwtDecode(localStorage.token);
+                if (decodedToken && decodedToken.userID) {
+                    saleInfo.userID = decodedToken.userID;
+                }
+            } catch (error) {
+                console.error("Error decoding token:", error);
+            }
         }
+        else { // https://developer.paypal.com/sdk/js/reference/#onapprove
+            const customer = paymentData.payer
+            const shippingAddress = paymentData.purchase_units[0].shipping?.address
+
+            saleInfo.guestInfo = {
+                name: customer.name?.given_name && customer.name?.surname ? `${customer.name.given_name} ${customer.name.surname}` : "Guest",
+                email: customer.email_address || "no-email@example.com",
+                address: shippingAddress
+                    ? `${shippingAddress.address_line_1 || ""}, ${shippingAddress.admin_area_2 || ""}, ${shippingAddress.admin_area_1 || ""} ${shippingAddress.postal_code || ""}`
+                    : "No address provided",
+                phone: customer.phone?.phone_number?.national_number || "No phone provided",
+            }
+            saleInfo.userID = null
+        }
+
+        console.log("Sale Info being sent to backend:", saleInfo)
 
         // cartitems passed multiple products being bought
         if (this.props.cartItems) {
-            payload.cartItems = this.props.cartItems
+            saleInfo.cartItems = this.props.cartItems
         }
         else {
-           payload.productId = this.props.productId
-            payload.quantity = this.props.quantity || 1
+            saleInfo.productId = this.props.productId
+            saleInfo.quantity = this.props.quantity || 1
         }
 
-        const endpoint = this.props.cartItems
-            ? `${SERVER_HOST}/sales/checkout` // mutiple products
+        console.log("Sale Info being sent to backend:", saleInfo)
+
+        const path = this.props.cartItems
+            ? `${SERVER_HOST}/sales/checkout` // multiple products
             : `${SERVER_HOST}/sales/${paymentData.orderID}/${this.props.productId}/${this.props.price}`  // 1 product
 
-        axios
-            .post(endpoint, payload, {
-                headers: {
-                    authorization: localStorage.token,
-                    "Content-type": "application/json",
-                },
-            })
+        axios.post(path, saleInfo, {headers: { authorization: localStorage.token, "Content-type": "application/json" }})
             .then((res) => {
                 this.setState({
                     payPalMessageType: PayPalMessage.messageType.SUCCESS,
