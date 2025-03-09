@@ -31,7 +31,7 @@ const checkThatUserExistsInUsersCollection = (req, res, next) => {
             return next(err)
         }
         if (!data) {
-            return next(createError(401, "User not found"))
+            return res.status(401).json({ errorMessage: "User not found" })
         }
         req.data = data
         return next()
@@ -44,7 +44,7 @@ const checkThatJWTPasswordIsValid = (req, res, next) => {
             return next(err)
         }
         if (!result) {
-            return next(createError(401), "Invalid password")
+            return res.status(401).json({ errorMessage: "Invalid password" })
         }
         return next()
     })

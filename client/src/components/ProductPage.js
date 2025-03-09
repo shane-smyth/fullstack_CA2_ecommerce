@@ -1,20 +1,23 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
-// import {Link, Redirect} from "react-router-dom"
+import {Link} from "react-router-dom"
 import { SERVER_HOST } from "../config/global_constants"
+import Toast from "./Toast"
 import BuyProduct from "./BuyProduct"
 
 export default class ProductPage extends Component {
     constructor(props) {
         super(props)
-
         this.state = {
             product: [],
             quantity: 1,
             showOutOfStockModal: false,
             showQuantityLimitModal: false,
             productImages: {},
+            slideIndex: 1,
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -25,6 +28,11 @@ export default class ProductPage extends Component {
                         product: res.data
                     }, () => {this.fetchProductImages(res.data)})
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error fetching product"
+                )
             })
     }
 
@@ -51,7 +59,9 @@ export default class ProductPage extends Component {
                         }
                     })
                     .catch(err => {
-                        console.error("Error fetching image:", err)
+                        this.toastRef.current.showError(
+                            err.response.data.errorMessage || "Error fetching image"
+                        )
                     })
             })
         }
@@ -101,11 +111,27 @@ export default class ProductPage extends Component {
         this.setState({   showQuantityLimitModal: false })
     }
 
-    render() {
-        const { product, productImages, quantity, showOutOfStockModal,   showQuantityLimitModal } = this.state
-        // console.log(product)
+    plusDivs = (n) => {
+        this.showDivs(this.state.slideIndex + n)
+    }
 
-        // let specs = product.specifications || []
+    showDivs = (n) => {
+        const images = this.state.product.images || []
+        let newIndex = n
+
+        if (n > images.length) {
+            newIndex = 1
+        }
+        if (n < 1) {
+            newIndex = images.length
+        }
+
+        this.setState({ slideIndex: newIndex })
+    }
+
+    render() {
+        const { product, productImages, quantity, showOutOfStockModal, showQuantityLimitModal, slideIndex } = this.state
+
 
         return (
             <div className="wholeProductPage">
@@ -114,15 +140,20 @@ export default class ProductPage extends Component {
                         <h2>{product.name}</h2>
                     </div>
 
-
                     <div className="productImgBox boxes">
-                        {(product.images || []).map((image, index) => (
-                            <img
-                                src={productImages[image.filename]}
-                                key={index}
-                                alt={`Product image ${index + 1}`}
-                            />
-                        ))}
+                        <div className="imageSlider">
+                            {(product.images || []).map((image, index) => (
+                                <div
+                                    key={index}
+                                    className="mySlides"
+                                    style={{display: (index + 1) === slideIndex ? "block" : "none"}}
+                                >
+                                    <img src={productImages[image.filename]} alt={`Product ${index + 1}`}/>
+                                </div>
+                            ))}
+                            <button className="w3-button w3-display-left" onClick={() => this.plusDivs(-1)}>&#10094;</button>
+                            <button className="w3-button w3-display-right" onClick={() => this.plusDivs(1)}>&#10095;</button>
+                        </div>
                     </div>
 
 
@@ -244,6 +275,7 @@ export default class ProductPage extends Component {
                         quam quia quidem quo voluptatem.</p>
 
                 </div>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

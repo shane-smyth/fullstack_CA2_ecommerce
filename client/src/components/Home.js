@@ -1,8 +1,8 @@
-import React, { Component } from "react"
+import React, { Component , createRef } from "react"
 import { Link } from "react-router-dom"
-// import Shop from "./Shop.js"
 import Categories from "./Categories.js"
 import Brands from "./Brands.js"
+import Toast from "./Toast"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
 
@@ -14,6 +14,8 @@ export default class Home extends Component {
         this.state = {
             products: [],
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -26,6 +28,12 @@ export default class Home extends Component {
                     console.log("Records not found.")
                 }
             })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Something went wrong"
+                )
+            })
+
     }
 
     render() {
@@ -63,6 +71,11 @@ export default class Home extends Component {
                 <div>
                     <Brands/>
                 </div>
+
+                <div>
+
+                </div>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

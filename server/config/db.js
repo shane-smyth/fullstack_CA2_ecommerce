@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-// mongoose.connect(`mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@eCommerceDB.yrjfx.mongodb.net/${process.env.DB_NAME_REMOTE}`, {
+// mongoose.connect(`mongodb+srv://${process.env.DB_USER_NAME}:${process.env.DB_USER_PASSWORD}@d00266295.yrjfx.mongodb.net/${process.env.DB_NAME_REMOTE}`, {
 //     useNewUrlParser: true,
 //     useFindAndModify: false,
 //     useCreateIndex: true,

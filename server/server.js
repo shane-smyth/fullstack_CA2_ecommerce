@@ -14,11 +14,6 @@ const app = express()
 app.use(require(`body-parser`).json())
 app.use(require(`cors`)({ credentials: true, origin: process.env.LOCAL_HOST }))
 
-//app.all("*", function(req, res, next) {
-//    res.header("Access-Control-Allow-Origin", "*")
-//    res.header("Access-Control-Allow-Headers", "X-Requested-With")
-//    }
-
 
 // Routers
 app.use(require(`./routes/products`))

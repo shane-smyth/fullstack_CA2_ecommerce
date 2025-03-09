@@ -1,7 +1,7 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import { SERVER_HOST } from "../config/global_constants"
-
+import Toast from "./Toast"
 
 export default class NewProduct extends Component {
     constructor(props) {
@@ -26,6 +26,8 @@ export default class NewProduct extends Component {
             newSubcategory: "",
             newBrand: ""
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -50,6 +52,11 @@ export default class NewProduct extends Component {
                 else {
                     console.log("Records not found.")
                 }
+            })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error occurred while trying to fetch products"
+                )
             })
     }
 
@@ -153,6 +160,13 @@ export default class NewProduct extends Component {
                     console.log("Record not added")
                 }
             })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error occurred while trying to add product"
+                )
+            })
+
+        this.props.onClose()
     }
 
     render() {
@@ -334,6 +348,7 @@ export default class NewProduct extends Component {
                         </div>
                     </form>
                 </div>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

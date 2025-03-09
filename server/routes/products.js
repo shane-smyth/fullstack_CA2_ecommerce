@@ -85,27 +85,27 @@ const getProductDocument = (req, res, next) => {
 const updateProduct = (req, res, next) => {
     productsModel.findById(req.params.id, (error, existingProduct) => {
         if (error || !existingProduct) {
-            return res.status(404).json({ errorMessage: "Product not found" })
+            return res.status(404).json({ errorMessage: "Product not found" });
         }
 
-        let updatedImages = [...existingProduct.images]
+        let updatedImages = [...existingProduct.images];
 
         if (req.files.length > 0) {
-            updatedImages = [...updatedImages, ...req.files.map(file => ({ filename: file.filename }))]
+            updatedImages = [...updatedImages, ...req.files.map(file => ({ filename: file.filename }))];
         }
 
         // Remove images that were deleted by the user
         if (req.body.removedImages) {
-            const removedImages = JSON.parse(req.body.removedImages)
-            updatedImages = updatedImages.filter(img => !removedImages.includes(img.filename))
+            const removedImages = JSON.parse(req.body.removedImages);
+            updatedImages = updatedImages.filter(img => !removedImages.includes(img.filename));
 
             // Delete the removed images from the server folder
             removedImages.forEach(filename => {
-                const filePath = `${process.env.UPLOADED_FILES_FOLDER}/${filename}`
+                const filePath = `${process.env.UPLOADED_FILES_FOLDER}/${filename}`;
                 fs.unlink(filePath, (err) => {
-                    if (err) console.error(`Error deleting file: ${filePath}`, err)
-                })
-            })
+                    if (err) console.error(`Error deleting file: ${filePath}`, err);
+                });
+            });
         }
 
         let productDetails = {
@@ -119,16 +119,16 @@ const updateProduct = (req, res, next) => {
             stock: req.body.stock,
             images: updatedImages,
             specifications: req.body.specifications || [],
-        }
+        };
 
         productsModel.findOneAndUpdate({ _id: req.params.id }, productDetails, { new: true }, (error, data) => {
             if (error) {
-                return next(error)
+                return next(error);
             }
-            res.json(data)
-        })
-    })
-}
+            res.json(data);
+        });
+    });
+};
 
 
 const deleteProduct = (req, res, next) => {
@@ -158,25 +158,5 @@ router.put(`/products/edit/:id`, verifyUsersJWTPassword, checkIfAdmin, upload.ar
 
 // delete one record
 router.delete(`/products/delete/:id`, verifyUsersJWTPassword, checkIfAdmin, deleteProduct)
-
-// getting selected product from shop page
-router.get(`/products/:id`, (req, res) => {
-    const selectedProduct = products.filter(product => product.productId === req.params.id)
-    res.json(selectedProduct[0])
-})
-
-// read the brand of the products in JSON
-// router.get(`/brands`, (req, res) => {
-//     const brands = [...new Set(products.map((product) => product.brand))]
-//     res.json(brands)
-// })
-router.get(`/brands`, (req, res, next) => {
-    productsModel.distinct('brand', (error, brands) => {
-        if (error) {
-            return next(error)
-        }
-        res.json(brands)
-    })
-})
 
 module.exports = router

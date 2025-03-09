@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-// import NewProduct from "./NewProduct"
+import NewProduct from "./NewProduct"
 import DisplayUsers from "./DispalyUsers"
 import AdminShowProducts from "./AdminShowProducts"
 // import { Link } from "react-router-dom"

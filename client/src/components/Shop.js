@@ -1,6 +1,7 @@
-import React, { Component } from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import DisplayAllProducts from "./DisplayAllProducts"
+import Toast from "./Toast"
 import {SERVER_HOST} from "../config/global_constants"
 import queryString from "query-string" // https://www.npmjs.com/package/query-string
 
@@ -9,7 +10,6 @@ const cleanSearch = (str) => {
 }
 
 export default class Shop extends Component {
-
     constructor(props) {
         super(props)
 
@@ -29,13 +29,15 @@ export default class Shop extends Component {
             allCategories: false,
             sortOption: "None Selected",
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
         axios.get(`${SERVER_HOST}/products`)
             .then(res => {
                 if (res.data) {
-                    console.log("Received data:", res.data)
+                    console.log("Received data:", res.data);
 
                     const products = res.data
                     const brands = [...new Set(products.map((product) => product.brand))]
@@ -81,8 +83,10 @@ export default class Shop extends Component {
                     console.log("Records not found.")
                 }
             })
-            .catch((error) => {
-                console.error("error fetching products:", error);
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error fetching products"
+                )
             })
     }
 
@@ -165,32 +169,6 @@ export default class Shop extends Component {
     render() {
         const {brands, priceRange, maxPrice, filteredProducts, inStock, categories, sortOption} = this.state
 
-        // let { products } = this.state
-
-        // const { location } = this.props
-        // const { search , category, brand} = location ? queryString.parse(location.search) : {}
-
-        // let displayProducts = filteredProducts
-        // if (search) {
-        //     const searchProduct = cleanSearch(search)
-
-        //     displayProducts = displayProducts.filter(
-        //         (product) =>
-        //             cleanSearch(String(product.name)).includes(searchProduct) ||
-        //             cleanSearch(String(product.description)).includes(searchProduct) ||
-        //             cleanSearch(String(product.category)).includes(searchProduct) ||
-        //             cleanSearch(String(product.subcategory)).includes(searchProduct) ||
-        //             cleanSearch(String(product.brand)).includes(searchProduct)
-        //     )
-        // }
-
-        // if (brand) {
-        //     products = products.filter(product => product.brand === brand)
-        // }
-        // if (category) {
-        //     products = products.filter(product => product.category === category)
-        // }
-
         return (
             <div className="shop boxes">
                 <div className="shopHeader boxes">
@@ -202,7 +180,7 @@ export default class Shop extends Component {
                     <div className="filterSortBar">
                         <h6>☰ Filters</h6>
 
-                        {/* sorting */}
+                        {/* sortign */}
                         <div className="sortDropdown">
                             <h6><label htmlFor="sort">Sort By ↕ &nbsp;</label></h6>
                             <select
@@ -330,6 +308,8 @@ export default class Shop extends Component {
                 <div className="shopProducts boxes">
                     {filteredProducts.length <= 0 ? <h3>No Products Found</h3> : <DisplayAllProducts products={filteredProducts} />}
                 </div>
+
+                <Toast ref={this.toastRef} />
             </div>
         )
     }

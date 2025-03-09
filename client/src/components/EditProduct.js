@@ -1,6 +1,7 @@
-import React, {Component} from "react"
+import React, {Component, createRef} from "react"
 import axios from "axios"
 import {SERVER_HOST} from "../config/global_constants"
+import Toast from "./Toast"
 
 export default class EditProduct extends Component {
     constructor(props) {
@@ -25,6 +26,8 @@ export default class EditProduct extends Component {
             subcategories: [],
             brands: [],
         }
+
+        this.toastRef = createRef() //https://legacy.reactjs.org/docs/refs-and-the-dom.html
     }
 
     componentDidMount() {
@@ -47,6 +50,11 @@ export default class EditProduct extends Component {
                     console.log("Records not found.")
                 }
             })
+            .catch(err => {
+                this.toastRef.current.showError(
+                    err.response.data.errorMessage || "Error fetching products",
+                )
+            })
     }
 
     fetchProductImages = () => {
@@ -68,7 +76,9 @@ export default class EditProduct extends Component {
                         }
                     })
                     .catch(err => {
-                        console.error("Error fetching image:", err)
+                        this.toastRef.current.showError(
+                            err.response.data.errorMessage || "Error fetching image",
+                        )
                     })
             })
         }
@@ -178,6 +188,13 @@ export default class EditProduct extends Component {
                 console.log("Updating product failed")
             }
         })
+        .catch(err => {
+            this.toastRef.current.showError(
+                err.response.data.errorMessage || "Error updating product",
+            )
+        })
+
+        this.props.onClose()
     }
 
 
@@ -360,6 +377,7 @@ export default class EditProduct extends Component {
                         </div>
                     </form>
                 </div>
+                <Toast ref={this.toastRef} />
             </div>
         )
     }
