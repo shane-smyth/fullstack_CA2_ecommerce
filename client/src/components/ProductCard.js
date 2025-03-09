@@ -67,7 +67,7 @@ export default class ProductCard extends Component {
                             <div className="productCardImg">
                                 {product.images && product.images.length > 0 && (
                                     <img
-                                        src={productImages[product.images[0].filename]}
+                                        src={this.state.productImages[product.images[0].filename]}
                                         alt={`image of ${product.name}`}
                                     />
                                 )}
@@ -76,7 +76,6 @@ export default class ProductCard extends Component {
                                 <h4>{product.name}</h4>
                                 <div className="starsBox"></div>
                                 <ul>
-                                    {/*https://www.geeksforgeeks.org/javascript-object-entries-method/*/}
                                     {product.specifications.map((spec, index) => (
                                         <li key={index}>
                                             <strong>{spec.key}:</strong> {spec.value}

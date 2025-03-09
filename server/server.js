@@ -28,7 +28,7 @@ app.listen(process.env.SERVER_PORT, () => {
 
 
 // Error 404
-app.use((req, res, next) => { next(createError(404)) })
+app.use((req, res, next) => {})
 
 // Handle errors
 app.use(function (err, req, res, next)
