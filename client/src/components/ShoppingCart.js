@@ -145,7 +145,7 @@ export default class ShoppingCart extends Component {
             <div className="cartPageContainer">
                 <h2>Shopping Cart</h2>
                 {isCartEmpty ?
-                    <p className="emptyCartMessage">Your shopping cart is empty.</p>
+                    <p className="emptyMessage">Your shopping cart is empty.</p>
                     :
                     <>
                         <table className="cartTable">

@@ -79,10 +79,25 @@ const addNewUserToUserCollection = (req, res, next) => {
     })
 }
 
-const returnUsersDetailsAsJson = (req, res, next) => {
-    const {username, email, password} = req.data
-    const token = jwt.sign({email: email, accessLevel: req.data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
-    return res.json({ name: username, accessLevel: req.data.accessLevel, token:token})
+// const returnUsersDetailsAsJson = (req, res, next) => {
+//     const {_id, username, email, password} = req.data
+//     const token = jwt.sign({userID: _id, email: email, accessLevel: req.data.accessLevel}, JWT_PRIVATE_KEY, {algorithm: 'HS256', expiresIn:process.env.JWT_EXPIRY})
+//     return res.json({ _id: _id, name: username, accessLevel: req.data.accessLevel, token:token})
+// }
+const returnUsersDetailsAsJson = (req, res) => {
+    const { _id, username, email, accessLevel, pfp } = req.data
+    const token = jwt.sign({ userID: _id, email: email, accessLevel: accessLevel }, JWT_PRIVATE_KEY, { algorithm: "HS256", expiresIn: process.env.JWT_EXPIRY })
+    res.json({
+        success: true,
+        token: token,
+        user: {
+            _id: _id,
+            name: username,
+            email: email,
+            accessLevel: accessLevel,
+            pfp: pfp,
+        },
+    })
 }
 
 const deleteUser = (req, res, next) => {
@@ -119,6 +134,5 @@ router.delete(`/users/delete/:id`, deleteUser)
 
 // logout
 router.post(`/users/logout`, logout)
-
 
 module.exports = router

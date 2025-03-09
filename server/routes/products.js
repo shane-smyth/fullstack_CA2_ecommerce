@@ -159,11 +159,11 @@ router.put(`/products/edit/:id`, verifyUsersJWTPassword, checkIfAdmin, upload.ar
 // delete one record
 router.delete(`/products/delete/:id`, verifyUsersJWTPassword, checkIfAdmin, deleteProduct)
 
-// getting selected product from shop page
-router.get(`/products/:id`, (req, res) => {
-    const selectedProduct = products.filter(product => product.productId === req.params.id)
-    res.json(selectedProduct[0])
-})
+// // getting selected product from shop page
+// router.get(`/products/:id`, (req, res) => {
+//     const selectedProduct = products.filter(product => product.productId === req.params.id)
+//     res.json(selectedProduct[0])
+// })
 
 // read the brand of the products in JSON
 // router.get(`/brands`, (req, res) => {
@@ -177,6 +177,31 @@ router.get(`/brands`, (req, res, next) => {
         }
         res.json(brands)
     })
+})
+
+// user returns product
+router.post("/returnStock", (req, res) => {
+    console.log(req.body)
+    const { productID, quantity } = req.body
+
+    console.log("product id:", productID)
+    console.log("quantity:", quantity)
+
+    // return the stock
+    productsModel.findByIdAndUpdate(
+        productID, { $inc: { stock: quantity } }, { new: true }, (err, product) => {
+            if (err) {
+                console.error("Error updating stock:", err)
+                return res.status(500).json({ success: false, errorMessage: "Failed to return stock" })
+            }
+            if (!product) {
+                console.error("Product not found:", productID)
+                return res.status(404).json({ success: false, errorMessage: "Product not found" })
+            }
+            console.log("Stock updated successfully:", product)
+            return res.json({ success: true })
+        }
+    )
 })
 
 module.exports = router

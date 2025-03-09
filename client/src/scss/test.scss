@@ -232,7 +232,7 @@
     background-color: #000;
 }
 
-.emptyCartMessage {
+.emptyMessage {
     text-align: center;
     color: #888;
 }
@@ -266,5 +266,31 @@
 }
 
 #payPalPaymentID {
+    font-weight: bold;
+}
+
+// --------------------------- rreturns
+.returnedPurchase p {
+    text-decoration: line-through;
+    opacity: 0.7;
+    color: #888;
+}
+
+.returnedLabel {
+    color: green;
+    font-weight: bold;
+    //margin-top: 5px;
+    //font-style: italic;
+    font-size: 22px;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+    opacity: 0.7;
+    color: #888;
+}
+
+.returned {
+    color: green;
     font-weight: bold;
 }

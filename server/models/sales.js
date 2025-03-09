@@ -3,9 +3,16 @@ const mongoose = require('mongoose')
 let salesSchema = new mongoose.Schema({
     paypalPaymentID: { type: String, required: true },
     productID: { type: String, required: true },
-    // userID: { type: String, ref: userID, required: true },
-    price: { type: Number, required: true }
-    // quantity
+    price: { type: Number, required: true },
+    quantity: { type: Number, required: true },
+    userID: { type: String, ref: 'users' },
+    returned: { type: Boolean, default: false },
+    guestInfo: {
+        name: { type: String },
+        address: { type: String },
+        phone: { type: String },
+        email: { type: String },
+    }
 }, {
     collection: 'sales'
 })

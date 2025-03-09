@@ -33,24 +33,25 @@ export default class Login extends Component
         e.preventDefault()
 
         axios.post(`${SERVER_HOST}/users/login`, {
-            email: this.state.email,
-            password: this.state.password,
-        })
-            .then(res =>
+                email: this.state.email,
+                password: this.state.password,
+            })
+            .then((res) =>
             {
-                if(res.data) {
+                if (res.data) {
                     if (res.data.errorMessage) {
                         console.log(res.data.errorMessage)
                     }
                     else {
                         console.log("User logged in")
 
-                        localStorage.name = res.data.name
-                        localStorage.accessLevel = res.data.accessLevel
+                        localStorage.user = JSON.stringify(res.data.user)
+                        localStorage.name = res.data.user.name
+                        localStorage.accessLevel = res.data.user.accessLevel
                         localStorage.token = res.data.token
-                        localStorage.pfp = res.data.pfp
+                        localStorage.pfp = res.data.user.pfp
 
-                        this.setState({isLoggedIn:true})
+                        this.setState({isLoggedIn: true})
                         window.location.reload(true) //https://upmostly.com/tutorials/how-to-refresh-a-page-or-component-in-react
                     }
                 }
