@@ -6,7 +6,10 @@ export default class AdminShowSales extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            sales: []
+            sales: [],
+            searchQuery: "",
+            sortBy: "None Selected",
+            filteredSales: [],
         }
     }
 
@@ -15,7 +18,8 @@ export default class AdminShowSales extends Component {
             .then(response => {
                 // console.log("all sales:", response.data)
                 this.setState({
-                    sales: response.data
+                    sales: response.data,
+                    filteredSales: response.data,
                 })
             })
             .catch(error => {
@@ -23,10 +27,69 @@ export default class AdminShowSales extends Component {
             })
     }
 
+    handleSearchChange = (e) => {
+        this.setState({
+            searchQuery: e.target.value
+        }, this.updateFilteredSales)
+    }
+
+    handleSortChange = (e) => {
+        this.setState({
+            sortBy: e.target.value
+        }, this.updateFilteredSales)
+    }
+
+    updateFilteredSales = () => {
+        const { sales, searchQuery, sortBy } = this.state
+
+        let filteredSales = sales.filter(sale =>
+            sale.paypalPaymentID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            sale.productID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (sale.userID && sale.userID.username.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (sale.guestInfo && (
+                sale.guestInfo.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                sale.guestInfo.email.toLowerCase().includes(searchQuery.toLowerCase())
+            ))
+        )
+
+        if (sortBy === "A-Z") {
+            filteredSales.sort((a, b) => a.productID.localeCompare(b.productID))
+        }
+        else if (sortBy === "Z-A") {
+            filteredSales.sort((a, b) => b.productID.localeCompare(a.productID))
+        }
+        else if (sortBy === "High to Low") {
+            filteredSales.sort((a, b) => b.price - a.price)
+        }
+        else if (sortBy === "Low to High") {
+            filteredSales.sort((a, b) => a.price - b.price)
+        }
+
+        this.setState({ filteredSales })
+    }
+
     render() {
+        const { filteredSales, searchQuery, sortBy } = this.state
+
         return (
-            <div>
+            <div className="adminShowSales">
                 <h1>Customer Purchase History</h1>
+
+                <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChange={this.handleSearchChange}
+                />
+
+                <select value={sortBy} onChange={this.handleSortChange}>
+                    <option>None Selected</option>
+                    <option>A-Z</option>
+                    <option>Z-A</option>
+                    <option>High to Low</option>
+                    <option>Low to High</option>
+                </select>
+
                 <table>
                     <thead>
                     <tr>
@@ -40,7 +103,7 @@ export default class AdminShowSales extends Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {this.state.sales.map((sale) => (
+                    {filteredSales.map((sale) => (
                         <tr key={sale._id}>
                             <td className={sale.returned ? "strikethrough" : ""}>{sale.paypalPaymentID}</td>
                             <td className={sale.returned ? "strikethrough" : ""}>{sale.productID}</td>

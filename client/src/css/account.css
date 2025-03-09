@@ -20,11 +20,94 @@
   gap: 1rem; }
 
 .accountPage {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%; }
+  display: grid;
+  width: 75%;
+  margin: auto;
+  padding-top: 2rem; }
 
 .accountContainer {
-  width: 50%; }
+  width: 100%; }
+
+.accountPageHeader {
+  border-bottom: #f1f1f1 2px solid;
+  padding-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; }
+
+.accountPageHeader h1 {
+  font-size: 3rem;
+  font-weight: bold; }
+
+.accountPageBody {
+  padding-top: 2rem; }
+
+.accountPageBody h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2c2929; }
+
+.accountHistory {
+  padding-top: 2rem; }
+
+.accountHistory h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #5b5b5b;
+  padding-bottom: 1rem; }
+
+.accountHistory ul {
+  list-style-type: none;
+  padding: 0; }
+
+.accountHistory li {
+  border: 1px solid #f1f1f1;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem; }
+
+.accountHistory li div {
+  margin-bottom: 1rem; }
+
+.accountHistory li p {
+  margin: 0.5rem; }
+
+.accountHistory .returnedPurchase {
+  opacity: 0.6; }
+
+.returnedPurchase p {
+  text-decoration: line-through;
+  opacity: 0.7;
+  color: #888; }
+
+.returnedLabel {
+  color: black;
+  font-weight: bold;
+  font-size: 20px; }
+
+.accountHistory button {
+  background-color: #e5e5e5;
+  color: black;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer; }
+
+.accountHistory button:hover {
+  background-color: #dedede; }
+
+.accountHistory input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #b6b6b6;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem; }
+
+.accountHistory select {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #b6b6b6;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem; }
+
+/*# sourceMappingURL=account.css.map */

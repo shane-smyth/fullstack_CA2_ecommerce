@@ -1,36 +1,3 @@
-// import React, {Component} from "react"
-// import Logout from "./Logout"
-// // import axios from "axios"
-// // import {SERVER_HOST} from "../config/global_constants"
-//
-// export default class Account extends Component {
-//     constructor(props) {
-//         super(props)
-//         this.state = {
-//             user: null,
-//         }
-//     }
-//
-//     render() {
-//         return (
-//             <div className="accountPage boxes">
-//                 <div className="accountContainer">
-//                     <div className="accountPageHeader boxes">
-//                         <Logout />
-//                         <h1>Account</h1>
-//                     </div>
-//                     <div className="accountPageBody boxes">
-//                         <h2>name</h2>
-//                     </div>
-//                     <div className="accountHistory boxes">
-//                         <h2>Account History</h2>
-//                     </div>
-//                 </div>
-//             </div>
-//         )
-//     }
-// }
-
 import React, { Component } from "react"
 import Logout from "./Logout"
 import axios from "axios"
@@ -45,6 +12,9 @@ export default class Account extends Component {
             purchaseHistory: [],
             showReturnConfirmModal: false,
             productToReturn: null,
+            searchQuery: "",
+            sortBy: "None Selected",
+            filteredPurchaseHistory: [],
         }
     }
 
@@ -66,7 +36,8 @@ export default class Account extends Component {
                     console.log("purchase history res:", res.data)
                     if (res.data && res.data.length > 0) {
                         this.setState({
-                            purchaseHistory: res.data
+                            purchaseHistory: res.data,
+                            filteredPurchaseHistory: res.data,
                         })
                     }
                 })
@@ -149,8 +120,42 @@ export default class Account extends Component {
         }
     }
 
+    handleSearchChange = (e) => {
+        this.setState({
+            searchQuery: e.target.value
+        }, this.updateFilteredPurchaseHistory)
+    }
+
+    handleSortChange = (e) => {
+        this.setState({
+            sortBy: e.target.value
+        }, this.updateFilteredPurchaseHistory)
+    }
+
+    updateFilteredPurchaseHistory = () => {
+        const { purchaseHistory, searchQuery, sortBy } = this.state
+
+        let filteredPurchases = purchaseHistory.filter(purchase =>
+            purchase.productID.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            purchase.paypalPaymentID.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+
+        if (sortBy === "A-Z") {
+            filteredPurchases.sort((a, b) => a.productID.localeCompare(b.productID))
+        } else if (sortBy === "Z-A") {
+            filteredPurchases.sort((a, b) => b.productID.localeCompare(a.productID))
+        } else if (sortBy === "High to Low") {
+            filteredPurchases.sort((a, b) => b.price - a.price)
+        } else if (sortBy === "Low to High") {
+            filteredPurchases.sort((a, b) => a.price - b.price)
+        }
+
+        this.setState({ filteredPurchaseHistory: filteredPurchases })
+    }
+
+
     render() {
-        const { user, purchaseHistory, showReturnConfirmModal, productToReturn } = this.state
+        const { user, filteredPurchaseHistory, showReturnConfirmModal, productToReturn } = this.state
 
         return (
             <div className="accountPage boxes">
@@ -164,9 +169,25 @@ export default class Account extends Component {
                     </div>
                     <div className="accountHistory boxes">
                         <h2>Account History</h2>
-                        {purchaseHistory && purchaseHistory.length > 0 ? (
+
+                        <input
+                            type="text"
+                            placeholder="Search"
+                            value={this.state.searchQuery}
+                            onChange={this.handleSearchChange}
+                        />
+
+                        <select value={this.state.sortBy} onChange={this.handleSortChange}>
+                            <option>None Selected</option>
+                            <option>A-Z</option>
+                            <option>Z-A</option>
+                            <option>High to Low</option>
+                            <option>Low to High</option>
+                        </select>
+
+                        {filteredPurchaseHistory && filteredPurchaseHistory.length > 0 ? (
                             <ul>
-                                {purchaseHistory.map((purchase, index) => (
+                                {filteredPurchaseHistory.map((purchase, index) => (
                                     <li key={index}>
                                         <div className={purchase.returned ? "returnedPurchase" : ""}>
                                             <p>Payment ID: {purchase.paypalPaymentID}</p>

@@ -207,23 +207,4 @@
 #payPalPaymentID {
   font-weight: bold; }
 
-.returnedPurchase p {
-  text-decoration: line-through;
-  opacity: 0.7;
-  color: #888; }
-
-.returnedLabel {
-  color: green;
-  font-weight: bold;
-  font-size: 22px; }
-
-.strikethrough {
-  text-decoration: line-through;
-  opacity: 0.7;
-  color: #888; }
-
-.returned {
-  color: green;
-  font-weight: bold; }
-
 /*# sourceMappingURL=test.css.map */

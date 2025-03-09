@@ -38,36 +38,37 @@ export default class BuyProduct extends Component {
         const saleInfo = {
             orderID: paymentData.orderID,
             price: this.props.price,
-        }
+            productId: this.props.productId,
+            quantity: this.props.quantity || 1,
+            guestInfo: null,
+        };
 
         if (localStorage.token && localStorage.token.trim() !== "") {
             try {
-                const decodedToken = jwtDecode(localStorage.token)
-                console.log("Decoded Token:", decodedToken)
+                const decodedToken = jwtDecode(localStorage.token);
                 if (decodedToken && decodedToken.userID) {
-                    saleInfo.userID = decodedToken.userID
-                }
-                else {
-                    console.error("userID not found in token")
+                    saleInfo.userID = decodedToken.userID;
                 }
             } catch (error) {
-                console.error("Error decoding token:", error)
+                console.error("Error decoding token:", error);
             }
         }
-        else {
-            // user is a guest extract guest info from PayPal response  https://developer.paypal.com/sdk/js/reference/#onapprove
-            // const customer = paymentData.payer
-            // const shippingAddress = paymentData.purchase_units[0].shipping?.address
-            //
-            // saleInfo.guestInfo = {
-            //     name: customer.name?.given_name + " " + customer.name?.surname,
-            //     email: customer.email_address,
-            //     address: shippingAddress
-            //         ? `${shippingAddress.address_line_1}, ${shippingAddress.admin_area_2}, ${shippingAddress.admin_area_1} ${shippingAddress.postal_code}`
-            //         : "No address provided",
-            //     phone: customer.phone?.phone_number?.national_number || "No phone provided",
-            // }
+        else { // https://developer.paypal.com/sdk/js/reference/#onapprove
+            const customer = paymentData.payer
+            const shippingAddress = paymentData.purchase_units[0].shipping?.address
+
+            saleInfo.guestInfo = {
+                name: customer.name?.given_name && customer.name?.surname ? `${customer.name.given_name} ${customer.name.surname}` : "Guest",
+                email: customer.email_address || "no-email@example.com",
+                address: shippingAddress
+                    ? `${shippingAddress.address_line_1 || ""}, ${shippingAddress.admin_area_2 || ""}, ${shippingAddress.admin_area_1 || ""} ${shippingAddress.postal_code || ""}`
+                    : "No address provided",
+                phone: customer.phone?.phone_number?.national_number || "No phone provided",
+            }
+            saleInfo.userID = null
         }
+
+        console.log("Sale Info being sent to backend:", saleInfo)
 
         // cartitems passed multiple products being bought
         if (this.props.cartItems) {
